@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "E0xKJoKuzN0=",
+  "dgSpecHash": "G8MIoBMNeZU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\samet\\Desktop\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Service\\Sapiforge.Service.csproj",
+  "projectFilePath": "C:\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Service\\Sapiforge.Service.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\samet\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.5\\microsoft.extensions.configuration.10.0.5.nupkg.sha512",
     "C:\\Users\\samet\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.5\\microsoft.extensions.configuration.abstractions.10.0.5.nupkg.sha512",

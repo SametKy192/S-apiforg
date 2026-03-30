@@ -2672,11 +2672,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samet\\Desktop\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Data\\Sapiforge.Data.csproj",
+      "projectUniqueName": "C:\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Data\\Sapiforge.Data.csproj",
       "projectName": "Sapiforge.Data",
-      "projectPath": "C:\\Users\\samet\\Desktop\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Data\\Sapiforge.Data.csproj",
+      "projectPath": "C:\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Data\\Sapiforge.Data.csproj",
       "packagesPath": "C:\\Users\\samet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samet\\Desktop\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Data\\obj\\",
+      "outputPath": "C:\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2697,8 +2697,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\samet\\Desktop\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Domain\\Sapiforge.Domain.csproj": {
-              "projectPath": "C:\\Users\\samet\\Desktop\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Domain\\Sapiforge.Domain.csproj"
+            "C:\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Domain\\Sapiforge.Domain.csproj": {
+              "projectPath": "C:\\s'apiforg\\S-apiforg\\backend\\Sapiforge.Domain\\Sapiforge.Domain.csproj"
             }
           }
         }

@@ -19,4 +19,7 @@ public interface IRequestRepository
 
     /// <summary>ID'ye göre isteği siler</summary>
     Task DeleteAsync(int id);
+
+    /// <summary>Response'u DB'ye kaydeder</summary>
+    Task SaveResponseAsync(ApiResponse response);
 }

@@ -43,6 +43,13 @@ public class RequestRepository : IRequestRepository
         return request;
     }
 
+    /// <summary>Response'u DB'ye kaydeder</summary>
+    public async Task SaveResponseAsync(ApiResponse response)
+    {
+        _context.Responses.Add(response);
+        await _context.SaveChangesAsync();
+    }
+
     /// <summary>ID'ye göre isteği ve ilişkili response'u siler</summary>
     public async Task DeleteAsync(int id)
     {

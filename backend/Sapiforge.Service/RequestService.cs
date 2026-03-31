@@ -34,12 +34,9 @@ public class RequestService : IRequestService
         // Proxy üzerinden dış API'ye ilet
         var response = await _proxyService.ForwardAsync(savedRequest);
 
-        // Response'u isteğe bağla
+        // Response'u DB'ye kaydet
         response.ApiRequestId = savedRequest.Id;
-        savedRequest.Response = response;
-
-        // Güncellenmiş isteği kaydet
-        await _requestRepository.AddAsync(savedRequest);
+        await _requestRepository.SaveResponseAsync(response);
 
         return response;
     }

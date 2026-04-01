@@ -46,3 +46,15 @@ C:\Projects\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapifor
 C:\Projects\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\refint\Sapiforge.Domain.dll
 C:\Projects\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.pdb
 C:\Projects\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\ref\Sapiforge.Domain.dll
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\bin\Debug\net10.0\Sapiforge.Domain.deps.json
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\bin\Debug\net10.0\Sapiforge.Domain.dll
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\bin\Debug\net10.0\Sapiforge.Domain.pdb
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.AssemblyInfoInputs.cache
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.AssemblyInfo.cs
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.csproj.CoreCompileInputs.cache
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.sourcelink.json
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.dll
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\refint\Sapiforge.Domain.dll
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\Sapiforge.Domain.pdb
+C:\sapiforg\Sapiforg\backend\Sapiforge.Domain\obj\Debug\net10.0\ref\Sapiforge.Domain.dll

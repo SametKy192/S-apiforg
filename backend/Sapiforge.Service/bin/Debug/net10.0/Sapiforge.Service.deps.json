@@ -8,11 +8,33 @@
     ".NETCoreApp,Version=v10.0": {
       "Sapiforge.Service/1.0.0": {
         "dependencies": {
+          "BCrypt.Net-Next": "4.1.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.5",
           "Microsoft.Extensions.Http": "10.0.5",
-          "Sapiforge.Domain": "1.0.0"
+          "Sapiforge.Domain": "1.0.0",
+          "System.IdentityModel.Tokens.Jwt": "8.17.0"
         },
         "runtime": {
           "Sapiforge.Service.dll": {}
+        }
+      },
+      "BCrypt.Net-Next/4.1.0": {
+        "runtime": {
+          "lib/net10.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.1.0.0",
+            "fileVersion": "4.1.0.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/10.0.5": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.0.1"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "assemblyVersion": "10.0.5.0",
+            "fileVersion": "10.0.526.15411"
+          }
         }
       },
       "Microsoft.Extensions.Configuration/10.0.5": {
@@ -169,6 +191,83 @@
           }
         }
       },
+      "Microsoft.IdentityModel.Abstractions/8.17.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Abstractions.dll": {
+            "assemblyVersion": "8.17.0.0",
+            "fileVersion": "8.17.0.26082"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.JsonWebTokens/8.17.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.17.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
+            "assemblyVersion": "8.17.0.0",
+            "fileVersion": "8.17.0.26082"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Logging/8.17.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Abstractions": "8.17.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Logging.dll": {
+            "assemblyVersion": "8.17.0.0",
+            "fileVersion": "8.17.0.26082"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Protocols/8.0.1": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.17.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.IdentityModel.Protocols.dll": {
+            "assemblyVersion": "8.0.1.0",
+            "fileVersion": "8.0.1.50722"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Protocols.OpenIdConnect/8.0.1": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols": "8.0.1",
+          "System.IdentityModel.Tokens.Jwt": "8.17.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {
+            "assemblyVersion": "8.0.1.0",
+            "fileVersion": "8.0.1.50722"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Tokens/8.17.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.5",
+          "Microsoft.IdentityModel.Logging": "8.17.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.IdentityModel.Tokens.dll": {
+            "assemblyVersion": "8.17.0.0",
+            "fileVersion": "8.17.0.26082"
+          }
+        }
+      },
+      "System.IdentityModel.Tokens.Jwt/8.17.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.JsonWebTokens": "8.17.0",
+          "Microsoft.IdentityModel.Tokens": "8.17.0"
+        },
+        "runtime": {
+          "lib/net10.0/System.IdentityModel.Tokens.Jwt.dll": {
+            "assemblyVersion": "8.17.0.0",
+            "fileVersion": "8.17.0.26082"
+          }
+        }
+      },
       "Sapiforge.Domain/1.0.0": {
         "runtime": {
           "Sapiforge.Domain.dll": {
@@ -184,6 +283,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "BCrypt.Net-Next/4.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5YT3DKllmtkyW68PjURu/V1TOe4MKiByKwsRNVcfYE1S5KuFTeozdmKzyNzolKiQF391OXCaQtINvYT3j1ERzQ==",
+      "path": "bcrypt.net-next/4.1.0",
+      "hashPath": "bcrypt.net-next.4.1.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/10.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fZzXogChrwQ/SfifQJgeW7AtR8hUv5+LH9oLWjm5OqfnVt3N8MwcMHHMdawvqqdjP79lIZgetnSpj77BLsSI1g==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/10.0.5",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.10.0.5.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration/10.0.5": {
       "type": "package",
@@ -275,6 +388,55 @@
       "sha512": "sha512-/HUHJ0tw/LQvD0DZrz50eQy/3z7PfX7WWEaXnjKTV9/TNdcgFlNTZGo49QhS7PTmhDqMyHRMqAXSBxLh0vso4g==",
       "path": "microsoft.extensions.primitives/10.0.5",
       "hashPath": "microsoft.extensions.primitives.10.0.5.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Abstractions/8.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6NrxQGcZg6IunkN8K2F0UVMavNpfCjbjjjON7PYcL8FwI8aULKUreiHsRX/yaA8j3XsTJnQKUYpoQk5gBjULZw==",
+      "path": "microsoft.identitymodel.abstractions/8.17.0",
+      "hashPath": "microsoft.identitymodel.abstractions.8.17.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.JsonWebTokens/8.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JbFZ3OVwtvqcqgBL0cIkhRYbIP7u9GIUYLOgbNqLWtBtZY8tGDpdGyXMzUVX0gVHq1ovuHsKZrkVv+ziHEnBHw==",
+      "path": "microsoft.identitymodel.jsonwebtokens/8.17.0",
+      "hashPath": "microsoft.identitymodel.jsonwebtokens.8.17.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Logging/8.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-w1vjfri0BWqW7RkSZY3ZsqekNfIJJg5BQSFs2j+a+pCXOVrkezmJcn74pT3djwjXJh71577C6wJQgNc2UPz30w==",
+      "path": "microsoft.identitymodel.logging/8.17.0",
+      "hashPath": "microsoft.identitymodel.logging.8.17.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uA2vpKqU3I2mBBEaeJAWPTjT9v1TZrGWKdgK6G5qJd03CLx83kdiqO9cmiK8/n1erkHzFBwU/RphP83aAe3i3g==",
+      "path": "microsoft.identitymodel.protocols/8.0.1",
+      "hashPath": "microsoft.identitymodel.protocols.8.0.1.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Protocols.OpenIdConnect/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AQDbfpL+yzuuGhO/mQhKNsp44pm5Jv8/BI4KiFXR7beVGZoSH35zMV3PrmcfvSTsyI6qrcR898NzUauD6SRigg==",
+      "path": "microsoft.identitymodel.protocols.openidconnect/8.0.1",
+      "hashPath": "microsoft.identitymodel.protocols.openidconnect.8.0.1.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Tokens/8.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-teaW35URIV2x78Tzk+dVJiC4M62/9mQoSEoDjDGoEZmcQa3H2rE+XQpm9Tmdo9KK1Lcrnve4zoyLavl69kCFGg==",
+      "path": "microsoft.identitymodel.tokens/8.17.0",
+      "hashPath": "microsoft.identitymodel.tokens.8.17.0.nupkg.sha512"
+    },
+    "System.IdentityModel.Tokens.Jwt/8.17.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nKikRYheDeSaXA3wGr2otwaiRFygBa25m+hc7MEomZVIEWZvKVqd8wgP9yn+8QpLRGgw//dUs4LErGx9gtVmAA==",
+      "path": "system.identitymodel.tokens.jwt/8.17.0",
+      "hashPath": "system.identitymodel.tokens.jwt.8.17.0.nupkg.sha512"
     },
     "Sapiforge.Domain/1.0.0": {
       "type": "project",

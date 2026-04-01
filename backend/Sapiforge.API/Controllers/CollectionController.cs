@@ -3,10 +3,12 @@ namespace Sapiforge.API.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Sapiforge.Domain.Interfaces;
 using Sapiforge.Domain.Models;
-
+using Microsoft.AspNetCore.Authorization;
 /// <summary>
 /// Koleksiyon yönetimi endpoint'lerini sunar.
 /// </summary>
+/// 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CollectionController : ControllerBase

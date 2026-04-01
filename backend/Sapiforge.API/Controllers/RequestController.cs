@@ -3,11 +3,13 @@ namespace Sapiforge.API.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Sapiforge.Domain.Interfaces;
 using Sapiforge.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 
 /// <summary>
 /// API isteği gönderme ve geçmiş yönetimi endpoint'lerini sunar.
 /// Proxy engine bu controller üzerinden çalışır.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class RequestController : ControllerBase

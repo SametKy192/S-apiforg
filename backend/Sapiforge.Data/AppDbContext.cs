@@ -30,6 +30,9 @@ public class AppDbContext : DbContext
     /// <summary>Ortam değişkenleri tablosu</summary>
     public DbSet<AppEnvironment> Environments { get; set; }
 
+    /// <summary>Kullanıcılar tablosu</summary>
+    public DbSet<User> Users { get; set; }
+
     /// <summary>
     /// Entity ilişkilerini ve kısıtlamalarını yapılandırır.
     /// Fluent API ile tablo ve kolon ayarları burada tanımlanır.

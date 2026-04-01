@@ -19,4 +19,7 @@ public interface IUserRepository
 
     /// <summary>Email adresi kayıtlı mı kontrol eder</summary>
     Task<bool> ExistsAsync(string email);
+
+    /// <summary>Kullanıcı bilgilerini günceller</summary>
+    Task<User> UpdateAsync(User user);
 }

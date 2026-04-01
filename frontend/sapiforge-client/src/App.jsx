@@ -6,6 +6,7 @@ import CollectionsPage from './pages/CollectionsPage';
 import HistoryPage from './pages/HistoryPage';
 import LoginPage from './pages/LoginPage';
 import { isAuthenticated } from './services/authService';
+import ProfilePage from './pages/ProfilePage';
 
 // ── Korumalı route — token yoksa login'e yönlendir ──────────────
 const ProtectedRoute = ({ children }) => {
@@ -28,6 +29,7 @@ const App = () => {
                   <Route path="/mock" element={<MockPage />} />
                   <Route path="/collections" element={<CollectionsPage />} />
                   <Route path="/history" element={<HistoryPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                 </Routes>
               </main>
             </div>

@@ -26,6 +26,7 @@ builder.Services.AddScoped<ICollectionService, CollectionService>();
 builder.Services.AddScoped<IEnvironmentService, EnvironmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // ── HttpClient — ProxyService için ────────────────────────────────
 builder.Services.AddHttpClient<IProxyService, ProxyService>();

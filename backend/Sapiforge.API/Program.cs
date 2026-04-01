@@ -39,6 +39,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -50,6 +52,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+// ── Global hata yönetimi ───────────────────────────────────────
+app.UseMiddleware<Sapiforge.API.Middleware.ExceptionHandlerMiddleware>();
 
 // ── Middleware pipeline ────────────────────────────────────────────
 if (app.Environment.IsDevelopment())

@@ -48,7 +48,12 @@ const RequestPage = () => {
       )}
 
       {/* Response görüntüleyici — başarılı isteklerde gösterilir */}
-      {currentResponse && <ResponseViewer response={currentResponse} />}
+      {currentResponse && (
+        <ResponseViewer
+          response={currentResponse}
+          requestId={currentResponse.apiRequestId}
+        />
+      )}
     </div>
   );
 };

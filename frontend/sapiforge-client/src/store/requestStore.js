@@ -52,6 +52,17 @@ const useRequestStore = create((set) => ({
       currentResponse: null,
       error: null,
     }),
+
+    // Geçmişteki isteği store'a yükler
+loadRequest: (request) =>
+  set({
+    currentRequest: {
+      url: request.url || '',
+      method: request.method || 'GET',
+      headers: request.headers || '',
+      body: request.body || '',
+    }
+  }),
 }));
 
 export default useRequestStore;

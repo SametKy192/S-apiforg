@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getHistory, deleteRequest } from '../services/requestService';
+import useRequestStore from '../store/requestStore';
 
 // ── Geçmiş sayfası ──────────────────────────────────────────────
-// Kullanıcının gönderdiği tüm isteklerin geçmişini listeler
+// Kullanıcının gönderdiği tüm isteklerin geçmişini listeler.
+// Geçmişteki istekler tekrar gönderilebilir veya silinebilir.
 const HistoryPage = () => {
+  const navigate = useNavigate();
+
+  // Store'dan loadRequest fonksiyonunu al
+  const { loadRequest } = useRequestStore();
+
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Geçmişi getir
+  // Geçmişi backend'den getir
   const fetchHistory = async () => {
     setIsLoading(true);
     try {
@@ -20,11 +28,12 @@ const HistoryPage = () => {
     }
   };
 
+  // Sayfa ilk yüklendiğinde geçmişi getir
   useEffect(() => {
     fetchHistory();
   }, []);
 
-  // Geçmişten sil
+  // Geçmiş kaydını sil
   const handleDelete = async (id) => {
     try {
       await deleteRequest(id);
@@ -32,6 +41,13 @@ const HistoryPage = () => {
     } catch (err) {
       console.error('İstek silinemedi:', err);
     }
+  };
+
+  // Geçmişteki isteği store'a yükle ve ana sayfaya git
+  // Kullanıcı ana sayfada isteği düzenleyip tekrar gönderebilir
+  const handleReuse = (request) => {
+    loadRequest(request);
+    navigate('/');
   };
 
   return (
@@ -49,6 +65,7 @@ const HistoryPage = () => {
               key={request.id}
               className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700"
             >
+              {/* Sol taraf: method, URL, status kodu */}
               <div className="flex items-center gap-3">
                 <span className="px-2 py-1 bg-blue-900 text-blue-300 text-xs rounded font-mono">
                   {request.method}
@@ -66,10 +83,18 @@ const HistoryPage = () => {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-4">
+
+              {/* Sağ taraf: tarih, tekrar gönder, sil */}
+              <div className="flex items-center gap-3">
                 <span className="text-gray-500 text-xs">
                   {new Date(request.createdAt).toLocaleString('tr-TR')}
                 </span>
+                <button
+                  onClick={() => handleReuse(request)}
+                  className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+                >
+                  Tekrar Gönder
+                </button>
                 <button
                   onClick={() => handleDelete(request.id)}
                   className="text-red-400 hover:text-red-300 text-sm transition-colors"

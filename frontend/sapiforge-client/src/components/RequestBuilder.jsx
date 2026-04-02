@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import useRequestStore from '../store/requestStore';
 
 // HTTP metodları ve renkleri
 const METHODS = [
@@ -12,11 +13,23 @@ const METHODS = [
 // ── Request Builder ─────────────────────────────────────────────
 // Kullanıcının URL, method, header ve body girdiği bileşen
 const RequestBuilder = ({ onSend, isLoading }) => {
-  const [method, setMethod] = useState('GET');
-  const [url, setUrl] = useState('');
-  const [headers, setHeaders] = useState('');
-  const [body, setBody] = useState('');
+  // Store'daki currentRequest'i dinle — geçmişten istek yüklenince güncellenir
+  const { currentRequest } = useRequestStore();
+
+  const [method, setMethod] = useState(currentRequest.method || 'GET');
+  const [url, setUrl] = useState(currentRequest.url || '');
+  const [headers, setHeaders] = useState(currentRequest.headers || '');
+  const [body, setBody] = useState(currentRequest.body || '');
   const [activeTab, setActiveTab] = useState('headers');
+
+  // Store'daki currentRequest değişince form alanlarını güncelle
+  // Geçmişten "Tekrar Gönder" butonuna basılınca tetiklenir
+  useEffect(() => {
+    setMethod(currentRequest.method || 'GET');
+    setUrl(currentRequest.url || '');
+    setHeaders(currentRequest.headers || '');
+    setBody(currentRequest.body || '');
+  }, [currentRequest]);
 
   // İsteği gönder
   const handleSend = () => {

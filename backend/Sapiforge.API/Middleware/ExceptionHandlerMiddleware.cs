@@ -1,12 +1,13 @@
 namespace Sapiforge.API.Middleware;
 
-using System.Net;
 using System.Text.Json;
+using Sapiforge.API.Exceptions;
+using Sapiforge.API.Models;
 
 /// <summary>
 /// Global hata yönetimi middleware'i.
-/// Uygulama genelinde yakalanmayan hataları yakalar,
-/// kullanıcıya anlamlı bir hata mesajı döndürür.
+/// Tüm exception türlerini yakalar, uygun HTTP kodu ile standart
+/// ErrorResponse formatında döndürür. Uygulama hiç çökmez.
 /// </summary>
 public class ExceptionHandlerMiddleware
 {
@@ -27,10 +28,7 @@ public class ExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
-            // Hatayı logla
-            _logger.LogError(ex, "Beklenmeyen bir hata oluştu: {Message}", ex.Message);
-
-            // Kullanıcıya hata döndür
+            _logger.LogError(ex, "Hata oluştu: {Message}", ex.Message);
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -39,31 +37,50 @@ public class ExceptionHandlerMiddleware
     {
         context.Response.ContentType = "application/json";
 
-        // Hata tipine göre status kodu belirle
-        context.Response.StatusCode = exception switch
+        // Exception türüne göre HTTP kodu ve mesaj belirle
+        var errorResponse = exception switch
         {
-            ArgumentNullException => (int)HttpStatusCode.BadRequest,
-            ArgumentException => (int)HttpStatusCode.BadRequest,
-            KeyNotFoundException => (int)HttpStatusCode.NotFound,
-            UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
-            _ => (int)HttpStatusCode.InternalServerError
-        };
-
-        // Hata response'u oluştur
-        var errorResponse = new
-        {
-            statusCode = context.Response.StatusCode,
-            message = exception switch
+            // Özel exception'larımız — doğrudan kodu ve mesajı al
+            BaseException baseEx => new ErrorResponse
             {
-                ArgumentNullException => "Geçersiz istek — zorunlu alan eksik.",
-                ArgumentException => "Geçersiz istek — hatalı parametre.",
-                KeyNotFoundException => "İstenen kayıt bulunamadı.",
-                UnauthorizedAccessException => "Bu işlem için yetkiniz yok.",
-                _ => "Sunucuda beklenmeyen bir hata oluştu."
+                StatusCode = baseEx.StatusCode,
+                Message = baseEx.Message
             },
-            detail = exception.Message
+
+            // .NET built-in exception'lar — uygun koda çevir
+            ArgumentException => new ErrorResponse
+            {
+                StatusCode = 400,
+                Message = exception.Message
+            },
+            KeyNotFoundException => new ErrorResponse
+            {
+                StatusCode = 404,
+                Message = exception.Message
+            },
+            UnauthorizedAccessException => new ErrorResponse
+            {
+                StatusCode = 401,
+                Message = "Bu işlem için giriş yapmanız gerekiyor."
+            },
+            // Hedef sunucuya bağlanılamadığında
+            System.Net.Http.HttpRequestException => new ErrorResponse
+            {
+                 StatusCode = 503,
+                Message = "Hedef sunucuya bağlanılamadı. Sunucu çalışmıyor olabilir."
+            },
+            // Bilinmeyen hatalar — 500 döner, detay loglanır
+            _ => new ErrorResponse
+            {
+                StatusCode = 500,
+                Message = "Sunucuda beklenmedik bir hata oluştu."
+            }
         };
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
+        context.Response.StatusCode = errorResponse.StatusCode;
+
+        await context.Response.WriteAsync(
+            JsonSerializer.Serialize(errorResponse,
+                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
     }
 }

@@ -22,6 +22,7 @@ public class AuthService : IAuthService
     /// <summary>
     /// Yeni kullanıcı kaydı oluşturur.
     /// Şifreyi hash'ler, DB'ye kaydeder ve JWT token döndürür.
+    /// Email zaten kayıtlıysa ConflictException fırlatır.
     /// </summary>
     public async Task<string> RegisterAsync(string name, string email, string password)
     {
@@ -47,17 +48,16 @@ public class AuthService : IAuthService
     /// <summary>
     /// Email ve şifre ile giriş yapar.
     /// Şifreyi hash ile karşılaştırır, JWT token döndürür.
+    /// Kullanıcı bulunamazsa veya şifre yanlışsa UnauthorizedAccessException fırlatır.
+    /// Güvenlik nedeniyle hangi bilginin yanlış olduğu belirtilmez.
     /// </summary>
     public async Task<string> LoginAsync(string email, string password)
     {
         var user = await _userRepository.GetByEmailAsync(email);
 
-        if (user == null)
-            throw new KeyNotFoundException("Email veya şifre hatalı.");
-
-        // Şifre doğru mu kontrol et
-        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-            throw new KeyNotFoundException("Email veya şifre hatalı.");
+        // Kullanıcı bulunamadı veya şifre yanlış — güvenlik için aynı mesaj
+        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            throw new UnauthorizedAccessException("Email veya şifre hatalı.");
 
         return _tokenService.GenerateToken(user.Id.ToString(), user.Email);
     }

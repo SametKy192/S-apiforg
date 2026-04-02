@@ -5,15 +5,17 @@ import useRequestStore from '../store/requestStore';
 
 // ── Geçmiş sayfası ──────────────────────────────────────────────
 // Kullanıcının gönderdiği tüm isteklerin geçmişini listeler.
-// Geçmişteki istekler tekrar gönderilebilir veya silinebilir.
+// URL'ye göre arama ve method'a göre filtreleme desteklenir.
 const HistoryPage = () => {
   const navigate = useNavigate();
-
-  // Store'dan loadRequest fonksiyonunu al
   const { loadRequest } = useRequestStore();
 
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Arama ve filtreleme state'leri
+  const [search, setSearch] = useState('');
+  const [methodFilter, setMethodFilter] = useState('ALL');
 
   // Geçmişi backend'den getir
   const fetchHistory = async () => {
@@ -28,7 +30,6 @@ const HistoryPage = () => {
     }
   };
 
-  // Sayfa ilk yüklendiğinde geçmişi getir
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -44,30 +45,92 @@ const HistoryPage = () => {
   };
 
   // Geçmişteki isteği store'a yükle ve ana sayfaya git
-  // Kullanıcı ana sayfada isteği düzenleyip tekrar gönderebilir
   const handleReuse = (request) => {
     loadRequest(request);
     navigate('/');
   };
 
+  // Arama ve filtreleme uygulanmış liste
+  const filteredHistory = history.filter((request) => {
+    // URL araması
+    const matchesSearch = request.url
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    // Method filtresi
+    const matchesMethod =
+      methodFilter === 'ALL' || request.method === methodFilter;
+
+    return matchesSearch && matchesMethod;
+  });
+
+  // Method badge rengi
+  const getMethodColor = (method) => {
+    switch (method) {
+      case 'GET': return 'bg-green-900 text-green-300';
+      case 'POST': return 'bg-blue-900 text-blue-300';
+      case 'PUT': return 'bg-yellow-900 text-yellow-300';
+      case 'DELETE': return 'bg-red-900 text-red-300';
+      case 'PATCH': return 'bg-purple-900 text-purple-300';
+      default: return 'bg-gray-800 text-gray-300';
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 p-6">
+      {/* Başlık */}
       <h1 className="text-xl font-medium text-white">İstek Geçmişi</h1>
 
+      {/* Arama ve filtre satırı */}
+      <div className="flex gap-3">
+        {/* URL arama */}
+        <input
+          type="text"
+          placeholder="URL'de ara..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 placeholder-gray-500"
+        />
+
+        {/* Method filtresi */}
+        <select
+          value={methodFilter}
+          onChange={(e) => setMethodFilter(e.target.value)}
+          className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+        >
+          <option value="ALL">Tüm Metodlar</option>
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+          <option value="PATCH">PATCH</option>
+        </select>
+      </div>
+
+      {/* Sonuç sayısı */}
+      {!isLoading && (
+        <p className="text-gray-500 text-xs">
+          {filteredHistory.length} istek gösteriliyor
+        </p>
+      )}
+
+      {/* Liste */}
       {isLoading ? (
         <p className="text-gray-400 text-sm">Yükleniyor...</p>
-      ) : history.length === 0 ? (
-        <p className="text-gray-400 text-sm">Henüz istek gönderilmedi.</p>
+      ) : filteredHistory.length === 0 ? (
+        <p className="text-gray-400 text-sm">
+          {history.length === 0 ? 'Henüz istek gönderilmedi.' : 'Arama kriterine uygun istek bulunamadı.'}
+        </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {history.map((request) => (
+          {filteredHistory.map((request) => (
             <div
               key={request.id}
               className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700"
             >
               {/* Sol taraf: method, URL, status kodu */}
               <div className="flex items-center gap-3">
-                <span className="px-2 py-1 bg-blue-900 text-blue-300 text-xs rounded font-mono">
+                <span className={`px-2 py-1 text-xs rounded font-mono ${getMethodColor(request.method)}`}>
                   {request.method}
                 </span>
                 <span className="text-white font-mono text-sm truncate max-w-md">

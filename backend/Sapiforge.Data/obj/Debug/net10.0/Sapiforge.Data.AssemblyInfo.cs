@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sapiforge.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf883b2759a4e9a498a54ef4a91f50055c3c83aa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c96e846041b01231c58a199f7479263b38820da")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sapiforge.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sapiforge.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

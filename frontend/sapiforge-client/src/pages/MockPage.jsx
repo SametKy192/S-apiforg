@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import MockForm from '../components/MockForm';
 import { getAllMocks, deleteMock } from '../services/mockService';
+import api from '../services/api';
 
 // ── Mock sayfası ────────────────────────────────────────────────
-// Kullanıcının mock endpoint oluşturup yönettiği sayfa
+// Mock endpoint listesi, oluşturma ve test etme
 const MockPage = () => {
   const [mocks, setMocks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  // Test sonuçlarını sakla — her mock için ayrı
+  const [testResults, setTestResults] = useState({});
 
   // Tüm mock endpoint'leri getir
   const fetchMocks = async () => {
@@ -33,6 +37,40 @@ const MockPage = () => {
       setMocks(mocks.filter((m) => m.id !== id));
     } catch (err) {
       console.error('Mock endpoint silinemedi:', err);
+    }
+  };
+
+  // Mock endpoint'i test et — proxy üzerinden istek at
+  const handleTest = async (mock) => {
+    // Test başladı — yükleniyor durumu
+    setTestResults((prev) => ({ ...prev, [mock.id]: { loading: true } }));
+
+    try {
+      const response = await api.post('/Request/send', {
+        url: `http://localhost:5089/api/Mock/serve${mock.path}`,
+        method: mock.method,
+        headers: '',
+        body: '',
+      });
+
+      // Test başarılı — response'u kaydet
+      setTestResults((prev) => ({
+        ...prev,
+        [mock.id]: {
+          loading: false,
+          status: response.data.statusCode,
+          body: response.data.body,
+        },
+      }));
+    } catch (err) {
+      // Test başarısız
+      setTestResults((prev) => ({
+        ...prev,
+        [mock.id]: {
+          loading: false,
+          error: 'Test başarısız.',
+        },
+      }));
     }
   };
 
@@ -65,27 +103,68 @@ const MockPage = () => {
       ) : mocks.length === 0 ? (
         <p className="text-gray-400 text-sm">Henüz mock endpoint oluşturulmadı.</p>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {mocks.map((mock) => (
             <div
               key={mock.id}
-              className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700"
+              className="flex flex-col gap-3 p-4 bg-gray-800 rounded-lg border border-gray-700"
             >
-              <div className="flex items-center gap-3">
-                <span className="px-2 py-1 bg-blue-900 text-blue-300 text-xs rounded font-mono">
-                  {mock.method}
-                </span>
-                <span className="text-white font-mono text-sm">{mock.path}</span>
-                <span className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
-                  {mock.statusCode}
-                </span>
+              {/* Mock bilgileri */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="px-2 py-1 bg-blue-900 text-blue-300 text-xs rounded font-mono">
+                    {mock.method}
+                  </span>
+                  <span className="text-white font-mono text-sm">{mock.path}</span>
+                  <span className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
+                    {mock.statusCode}
+                  </span>
+                  {!mock.isActive && (
+                    <span className="px-2 py-1 bg-red-900 text-red-300 text-xs rounded">
+                      Pasif
+                    </span>
+                  )}
+                </div>
+
+                {/* Butonlar */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleTest(mock)}
+                    disabled={!mock.isActive || testResults[mock.id]?.loading}
+                    className="text-green-400 hover:text-green-300 text-sm transition-colors disabled:opacity-40"
+                  >
+                    {testResults[mock.id]?.loading ? 'Test ediliyor...' : 'Test Et'}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(mock.id)}
+                    className="text-red-400 hover:text-red-300 text-sm transition-colors"
+                  >
+                    Sil
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => handleDelete(mock.id)}
-                className="text-red-400 hover:text-red-300 text-sm transition-colors"
-              >
-                Sil
-              </button>
+
+              {/* Test sonucu */}
+              {testResults[mock.id] && !testResults[mock.id].loading && (
+                <div className={`p-3 rounded-lg border text-sm font-mono ${
+                  testResults[mock.id].error
+                    ? 'bg-red-900/20 border-red-800 text-red-400'
+                    : 'bg-gray-900 border-gray-700 text-green-300'
+                }`}>
+                  {testResults[mock.id].error ? (
+                    testResults[mock.id].error
+                  ) : (
+                    <>
+                      <span className="text-gray-400 text-xs">
+                        {testResults[mock.id].status}
+                      </span>
+                      <pre className="mt-1 whitespace-pre-wrap break-words">
+                        {testResults[mock.id].body}
+                      </pre>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

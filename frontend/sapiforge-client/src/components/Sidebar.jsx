@@ -59,6 +59,20 @@ const Sidebar = () => {
           Geçmiş
         </NavLink>
 
+        <NavLink to="/environments" className={linkClass}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+             <path d="M2 13V3h12v10H2zM5 8h6M5 6h6M5 10h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          Ortamlar (Env)
+        </NavLink>
+
+        <NavLink to="/docs" className={linkClass}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4 2v12h8V4.5L9.5 2H4zM9 2v3h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Dokümanlar
+        </NavLink>
+
         <NavLink to="/profile" className={linkClass}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="5" r="3" stroke="currentColor" strokeWidth="1.5"/>

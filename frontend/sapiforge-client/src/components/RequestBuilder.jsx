@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import useRequestStore from '../store/requestStore';
+import { getAllEnvironments } from '../services/environmentService';
 
 // HTTP metodları ve renkleri
 const METHODS = [
@@ -21,9 +22,64 @@ const RequestBuilder = ({ onSend, isLoading }) => {
   const [headers, setHeaders] = useState(currentRequest.headers || '');
   const [body, setBody] = useState(currentRequest.body || '');
   const [activeTab, setActiveTab] = useState('headers');
+  const [environments, setEnvironments] = useState([]);
+  const [activeEnvId, setActiveEnvId] = useState('');
+
+  // Ortamları çek ve aktif olanı bul
+  const fetchEnvs = async () => {
+    try {
+      const envs = await getAllEnvironments();
+      setEnvironments(envs);
+      const active = envs.find((e) => e.isActive);
+      if (active) setActiveEnvId(active.id.toString());
+      else setActiveEnvId('');
+    } catch (err) {
+      console.error('Active env fetch error:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchEnvs();
+  }, []);
+
+  // Ortam değiştir
+  const handleEnvChange = async (envId) => {
+    // Eğer "Seçiniz..." seçildiyse mevcut aktif olanı pasife çek
+    if (!envId) {
+      if (activeEnvId) {
+        const active = environments.find((e) => e.id === parseInt(activeEnvId));
+        if (active) {
+          try {
+            await updateEnvironment(active.id, { ...active, isActive: false });
+            setActiveEnvId('');
+          } catch (err) {
+            console.error('Env set passive error:', err);
+          }
+        }
+      }
+      return;
+    }
+
+    // Yeni ortam seç
+    const selected = environments.find((e) => e.id === parseInt(envId));
+    if (selected) {
+      try {
+        await updateEnvironment(selected.id, { ...selected, isActive: true });
+        
+        // Backend'deki agresif temizliğin sonuçlarını al ve UI'ı güncelle
+        const updatedEnvs = await getAllEnvironments();
+        setEnvironments(updatedEnvs);
+        
+        const newActive = updatedEnvs.find(e => e.isActive);
+        if (newActive) setActiveEnvId(newActive.id.toString());
+
+      } catch (err) {
+        console.error('Env change error:', err);
+      }
+    }
+  };
 
   // Store'daki currentRequest değişince form alanlarını güncelle
-  // Geçmişten "Tekrar Gönder" butonuna basılınca tetiklenir
   useEffect(() => {
     setMethod(currentRequest.method || 'GET');
     setUrl(currentRequest.url || '');
@@ -59,12 +115,29 @@ const RequestBuilder = ({ onSend, isLoading }) => {
         {/* URL input */}
         <input
           type="text"
-          placeholder="https://api.example.com/endpoint"
+          placeholder="https://api.example.com/endpoint veya {{baseUrl}}/users"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           className="flex-1 px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm font-mono focus:outline-none focus:border-blue-500 placeholder-gray-600"
         />
+
+        {/* Ortam Seçici */}
+        <div className="flex items-center px-1 bg-gray-900 border border-gray-700 rounded-lg focus-within:border-blue-500">
+          <span className="text-[9px] text-gray-500 uppercase font-bold ml-2 mr-1">Env:</span>
+          <select
+            value={activeEnvId}
+            onChange={(e) => handleEnvChange(e.target.value)}
+            className="bg-transparent text-xs text-blue-400 font-medium py-1 px-1 focus:outline-none min-w-[100px] cursor-pointer"
+          >
+            <option value="" className="bg-gray-900 text-gray-400">Seçiniz...</option>
+            {environments.map((env) => (
+              <option key={env.id} value={env.id} className="bg-gray-900 text-white">
+                {env.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Gönder butonu */}
         <button

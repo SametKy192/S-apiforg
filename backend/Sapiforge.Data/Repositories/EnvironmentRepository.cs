@@ -36,16 +36,32 @@ public class EnvironmentRepository : IEnvironmentRepository
     /// <summary>Yeni ortam oluşturur</summary>
     public async Task<AppEnvironment> AddAsync(AppEnvironment environment)
     {
+        // Eğer yeni ortam aktif gelirse, diğerlerini temizle
+        if (environment.IsActive)
+        {
+            await _context.Environments
+                .Where(e => e.IsActive)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
+        }
+
         _context.Environments.Add(environment);
         await _context.SaveChangesAsync();
         return environment;
     }
 
-    /// <summary>Ortamı günceller</summary>
     public async Task<AppEnvironment> UpdateAsync(AppEnvironment environment)
     {
-        _context.Environments.Update(environment);
+        // Eğer bu ortam AKTİF olarak gelmişse, veritabanındaki her şeyi sıfırlıyoruz.
+        if (environment.IsActive)
+        {
+            await _context.Environments
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
+        }
+
+        // Nesnemizi güncelliyoruz. (Eğer IsActive=true ise şimdi veritabanında tek aktif bu olacak)
+        _context.Entry(environment).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+        
         return environment;
     }
 

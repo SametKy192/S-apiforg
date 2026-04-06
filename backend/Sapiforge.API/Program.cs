@@ -85,4 +85,25 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// ── Veri bütünlüğü kontrolü ────────────────────────────────────────
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var activeCount = await context.Environments.CountAsync(e => e.IsActive);
+    if (activeCount > 1)
+    {
+        // Eğer birden fazla aktif varsa, en yeni olan hariç hepsini pasif yap
+        var activeEnvs = await context.Environments
+            .Where(e => e.IsActive)
+            .OrderByDescending(e => e.CreatedAt)
+            .ToListAsync();
+
+        for (int i = 1; i < activeEnvs.Count; i++)
+        {
+            activeEnvs[i].IsActive = false;
+        }
+        await context.SaveChangesAsync();
+    }
+}
+
 app.Run();

@@ -12,22 +12,49 @@ public class RequestService : IRequestService
 {
     private readonly IRequestRepository _requestRepository;
     private readonly IProxyService _proxyService;
+    private readonly IEnvironmentService _environmentService;
 
     /// <summary>Bağımlılıklar dependency injection ile enjekte edilir</summary>
     public RequestService(
         IRequestRepository requestRepository,
-        IProxyService proxyService)
+        IProxyService proxyService,
+        IEnvironmentService environmentService)
     {
         _requestRepository = requestRepository;
         _proxyService = proxyService;
+        _environmentService = environmentService;
     }
 
     /// <summary>
     /// İsteği DB'ye kaydeder, proxy üzerinden dış API'ye iletir,
     /// response'u DB'ye kaydeder ve döndürür.
+    /// Değişkenleri ({{var}}) aktif ortamdaki değerlerle değiştirir.
     /// </summary>
     public async Task<ApiResponse> SendRequestAsync(ApiRequest request)
     {
+        // Aktif ortamı al ve değişkenleri yerleştir
+        var activeEnv = await _environmentService.GetActiveAsync();
+        if (activeEnv != null && !string.IsNullOrEmpty(activeEnv.Variables))
+        {
+            var variables = System.Text.Json.JsonSerializer
+                .Deserialize<Dictionary<string, string>>(activeEnv.Variables);
+
+            if (variables != null)
+            {
+                foreach (var variable in variables)
+                {
+                    var placeholder = "{{" + variable.Key + "}}";
+                    request.Url = request.Url.Replace(placeholder, variable.Value);
+                    
+                    if (!string.IsNullOrEmpty(request.Headers))
+                        request.Headers = request.Headers.Replace(placeholder, variable.Value);
+                    
+                    if (!string.IsNullOrEmpty(request.Body))
+                        request.Body = request.Body.Replace(placeholder, variable.Value);
+                }
+            }
+        }
+
         // İsteği önce DB'ye kaydet
         var savedRequest = await _requestRepository.AddAsync(request);
 

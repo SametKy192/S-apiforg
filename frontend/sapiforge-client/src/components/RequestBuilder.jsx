@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import useRequestStore from '../store/requestStore';
-import { getAllEnvironments } from '../services/environmentService';
+import { getAllEnvironments, updateEnvironment } from '../services/environmentService';
 
 // HTTP metodları ve renkleri
 const METHODS = [
@@ -24,6 +24,7 @@ const RequestBuilder = ({ onSend, isLoading }) => {
   const [activeTab, setActiveTab] = useState('headers');
   const [environments, setEnvironments] = useState([]);
   const [activeEnvId, setActiveEnvId] = useState('');
+  const [activeEnvVars, setActiveEnvVars] = useState(null);
 
   // Ortamları çek ve aktif olanı bul
   const fetchEnvs = async () => {
@@ -31,8 +32,13 @@ const RequestBuilder = ({ onSend, isLoading }) => {
       const envs = await getAllEnvironments();
       setEnvironments(envs);
       const active = envs.find((e) => e.isActive);
-      if (active) setActiveEnvId(active.id.toString());
-      else setActiveEnvId('');
+      if (active) {
+        setActiveEnvId(active.id.toString());
+        setActiveEnvVars(JSON.parse(active.variables || '{}'));
+      } else {
+        setActiveEnvId('');
+        setActiveEnvVars(null);
+      }
     } catch (err) {
       console.error('Active env fetch error:', err);
     }
@@ -49,9 +55,10 @@ const RequestBuilder = ({ onSend, isLoading }) => {
       if (activeEnvId) {
         const active = environments.find((e) => e.id === parseInt(activeEnvId));
         if (active) {
-          try {
+        try {
             await updateEnvironment(active.id, { ...active, isActive: false });
             setActiveEnvId('');
+            setActiveEnvVars(null);
           } catch (err) {
             console.error('Env set passive error:', err);
           }
@@ -71,7 +78,10 @@ const RequestBuilder = ({ onSend, isLoading }) => {
         setEnvironments(updatedEnvs);
         
         const newActive = updatedEnvs.find(e => e.isActive);
-        if (newActive) setActiveEnvId(newActive.id.toString());
+        if (newActive) {
+          setActiveEnvId(newActive.id.toString());
+          setActiveEnvVars(JSON.parse(newActive.variables || '{}'));
+        }
 
       } catch (err) {
         console.error('Env change error:', err);
@@ -123,7 +133,7 @@ const RequestBuilder = ({ onSend, isLoading }) => {
         />
 
         {/* Ortam Seçici */}
-        <div className="flex items-center px-1 bg-gray-900 border border-gray-700 rounded-lg focus-within:border-blue-500">
+        <div className="flex items-center px-1 bg-gray-900 border border-gray-700 rounded-lg focus-within:border-blue-500 relative group">
           <span className="text-[9px] text-gray-500 uppercase font-bold ml-2 mr-1">Env:</span>
           <select
             value={activeEnvId}
@@ -137,6 +147,21 @@ const RequestBuilder = ({ onSend, isLoading }) => {
               </option>
             ))}
           </select>
+          
+          {/* Değişken listesi tooltip-benzeri */}
+          {activeEnvVars && Object.keys(activeEnvVars).length > 0 && (
+            <div className="absolute top-full mt-2 left-0 z-10 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl p-2 invisible group-hover:visible group-focus-within:visible">
+              <span className="text-[10px] text-gray-500 font-bold uppercase mb-2 block">Aktif Değişkenler</span>
+              <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
+                {Object.entries(activeEnvVars).map(([key, value]) => (
+                  <div key={key} className="flex flex-col border-b border-gray-800 last:border-0 pb-1">
+                    <span className="text-[10px] text-blue-400 font-mono">{"{{"}{key}{"}}"}</span>
+                    <span className="text-[9px] text-gray-500 truncate">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Gönder butonu */}

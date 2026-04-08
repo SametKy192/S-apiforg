@@ -10,10 +10,11 @@ const useRequestStore = create((set) => ({
     headers: '',
     body: '',
   },
-  currentResponse: null,
-  history: [],
-  isLoading: false,
-  error: null,
+   currentResponse: null,
+   history: [],
+   isLoading: false,
+   error: null,
+   activeEnvironment: null, // Şuan seçili olan ortam
 
   // Mevcut isteği günceller
   setCurrentRequest: (request) =>
@@ -44,6 +45,10 @@ const useRequestStore = create((set) => ({
   // Hata durumunu günceller
   setError: (error) =>
     set({ error }),
+
+  // Aktif ortamı günceller
+  setActiveEnvironment: (env) =>
+    set({ activeEnvironment: env }),
 
   // State'i sıfırlar
   reset: () =>

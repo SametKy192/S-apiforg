@@ -1,9 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../services/authService';
+import useRequestStore from '../store/requestStore';
 
 // ── Sidebar ─────────────────────────────────────────────────────
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { activeEnvironment } = useRequestStore();
 
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
@@ -81,6 +83,17 @@ const Sidebar = () => {
           Profil
         </NavLink>
       </nav>
+
+      {/* Aktif Ortam Göstergesi — Deep Integration */}
+      {activeEnvironment && (
+        <div className="px-4 py-3 mx-3 mb-2 bg-blue-900/10 border border-blue-500/20 rounded-lg">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
+            <span className="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Aktif Ortam</span>
+          </div>
+          <p className="text-white text-xs font-medium truncate">{activeEnvironment.name}</p>
+        </div>
+      )}
 
       {/* Çıkış butonu */}
       <div className="p-3 border-t border-gray-800">

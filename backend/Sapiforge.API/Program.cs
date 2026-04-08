@@ -9,8 +9,19 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Veritabanı bağlantısı ──────────────────────────────────────────
+var provider = builder.Configuration["DatabaseProvider"] ?? "PostgreSQL";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (provider.Equals("Sqlite", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection"));
+    }
+    else
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+});
 
 // ── Repository kayıtları ───────────────────────────────────────────
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
@@ -89,6 +100,10 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    
+    // Veritabanının oluşturulduğundan emin ol (Özellikle SQLite için kritik)
+    await context.Database.EnsureCreatedAsync();
+
     var activeCount = await context.Environments.CountAsync(e => e.IsActive);
     if (activeCount > 1)
     {

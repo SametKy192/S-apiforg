@@ -14,8 +14,8 @@ const METHODS = [
 // ── Request Builder ─────────────────────────────────────────────
 // Kullanıcının URL, method, header ve body girdiği bileşen
 const RequestBuilder = ({ onSend, isLoading }) => {
-  // Store'daki currentRequest'i dinle — geçmişten istek yüklenince güncellenir
-  const { currentRequest } = useRequestStore();
+  // Store'daki currentRequest ve activeEnvironment'ı dinle
+  const { currentRequest, activeEnvironment, setActiveEnvironment } = useRequestStore();
 
   const [method, setMethod] = useState(currentRequest.method || 'GET');
   const [url, setUrl] = useState(currentRequest.url || '');
@@ -23,8 +23,11 @@ const RequestBuilder = ({ onSend, isLoading }) => {
   const [body, setBody] = useState(currentRequest.body || '');
   const [activeTab, setActiveTab] = useState('headers');
   const [environments, setEnvironments] = useState([]);
-  const [activeEnvId, setActiveEnvId] = useState('');
-  const [activeEnvVars, setActiveEnvVars] = useState(null);
+
+  // Ortam değişkenlerini JSON olarak çöz
+  const activeEnvVars = activeEnvironment?.variables 
+    ? JSON.parse(activeEnvironment.variables) 
+    : null;
 
   // Ortamları çek ve aktif olanı bul
   const fetchEnvs = async () => {
@@ -32,13 +35,7 @@ const RequestBuilder = ({ onSend, isLoading }) => {
       const envs = await getAllEnvironments();
       setEnvironments(envs);
       const active = envs.find((e) => e.isActive);
-      if (active) {
-        setActiveEnvId(active.id.toString());
-        setActiveEnvVars(JSON.parse(active.variables || '{}'));
-      } else {
-        setActiveEnvId('');
-        setActiveEnvVars(null);
-      }
+      setActiveEnvironment(active || null);
     } catch (err) {
       console.error('Active env fetch error:', err);
     }
@@ -52,16 +49,12 @@ const RequestBuilder = ({ onSend, isLoading }) => {
   const handleEnvChange = async (envId) => {
     // Eğer "Seçiniz..." seçildiyse mevcut aktif olanı pasife çek
     if (!envId) {
-      if (activeEnvId) {
-        const active = environments.find((e) => e.id === parseInt(activeEnvId));
-        if (active) {
+      if (activeEnvironment) {
         try {
-            await updateEnvironment(active.id, { ...active, isActive: false });
-            setActiveEnvId('');
-            setActiveEnvVars(null);
-          } catch (err) {
-            console.error('Env set passive error:', err);
-          }
+          await updateEnvironment(activeEnvironment.id, { ...activeEnvironment, isActive: false });
+          setActiveEnvironment(null);
+        } catch (err) {
+          console.error('Env set passive error:', err);
         }
       }
       return;
@@ -78,10 +71,7 @@ const RequestBuilder = ({ onSend, isLoading }) => {
         setEnvironments(updatedEnvs);
         
         const newActive = updatedEnvs.find(e => e.isActive);
-        if (newActive) {
-          setActiveEnvId(newActive.id.toString());
-          setActiveEnvVars(JSON.parse(newActive.variables || '{}'));
-        }
+        setActiveEnvironment(newActive || null);
 
       } catch (err) {
         console.error('Env change error:', err);
@@ -97,10 +87,32 @@ const RequestBuilder = ({ onSend, isLoading }) => {
     setBody(currentRequest.body || '');
   }, [currentRequest]);
 
+  // Değişkenleri ({{var}}) gerçek değerlerle değiştir
+  const replaceVariables = (text) => {
+    if (!text || !activeEnvVars) return text;
+    let newText = text;
+    Object.entries(activeEnvVars).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+      newText = newText.replace(regex, value);
+    });
+    return newText;
+  };
+
   // İsteği gönder
   const handleSend = () => {
     if (!url) return;
-    onSend({ url, method, headers, body });
+    
+    // Değişkenleri yerleştir
+    const substitutedUrl = replaceVariables(url);
+    const substitutedHeaders = replaceVariables(headers);
+    const substitutedBody = replaceVariables(body);
+
+    onSend({ 
+      url: substitutedUrl, 
+      method, 
+      headers: substitutedHeaders, 
+      body: substitutedBody 
+    });
   };
 
   const selectedMethod = METHODS.find((m) => m.value === method);
@@ -136,7 +148,7 @@ const RequestBuilder = ({ onSend, isLoading }) => {
         <div className="flex items-center px-1 bg-gray-900 border border-gray-700 rounded-lg focus-within:border-blue-500 relative group">
           <span className="text-[9px] text-gray-500 uppercase font-bold ml-2 mr-1">Env:</span>
           <select
-            value={activeEnvId}
+            value={activeEnvironment?.id || ''}
             onChange={(e) => handleEnvChange(e.target.value)}
             className="bg-transparent text-xs text-blue-400 font-medium py-1 px-1 focus:outline-none min-w-[100px] cursor-pointer"
           >

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 /// API isteği gönderme ve geçmiş yönetimi endpoint'lerini sunar.
 /// Proxy engine bu controller üzerinden çalışır.
 /// </summary>
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class RequestController : ControllerBase

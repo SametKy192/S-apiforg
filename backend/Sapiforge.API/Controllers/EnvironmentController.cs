@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 /// <summary>
 /// Ortam değişkenleri yönetimi endpoint'lerini sunar.
 /// </summary>
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EnvironmentController : ControllerBase

@@ -1,112 +1,82 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { logout } from '../services/authService';
+import { NavLink } from 'react-router-dom';
 import useRequestStore from '../store/requestStore';
 
-// ── Sidebar ─────────────────────────────────────────────────────
 const Sidebar = () => {
-  const navigate = useNavigate();
   const { activeEnvironment } = useRequestStore();
 
   const linkClass = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
+    `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
       isActive
-        ? 'bg-blue-600 text-white'
+        ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40'
         : 'text-gray-400 hover:bg-gray-800 hover:text-white'
     }`;
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   return (
-    <aside className="w-56 h-screen bg-gray-900 border-r border-gray-800 flex flex-col flex-shrink-0">
+    <aside className="w-64 h-screen bg-gray-900 border-r border-gray-800 flex flex-col flex-shrink-0">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-800">
-        <h1 className="text-white font-semibold text-lg tracking-tight">
-          S<span className="text-blue-400">'</span>apiforge
+      <div className="px-6 py-6 border-b border-gray-800">
+        <h1 className="text-white font-bold text-xl tracking-tight flex items-center gap-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+          Sapiforge
         </h1>
-        <p className="text-gray-500 text-xs mt-0.5">API Sandbox</p>
+        <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">API Sandbox Pro</p>
       </div>
 
       {/* Navigasyon */}
-      <nav className="flex flex-col gap-1 p-3 flex-1">
+      <nav className="flex flex-col gap-1.5 p-4 flex-1">
         <NavLink to="/" end className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 8h12M2 8l4-4M2 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
           </svg>
-          İstek Gönder
+          Send Request
         </NavLink>
 
         <NavLink to="/mock" className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/>
           </svg>
           Mock Engine
         </NavLink>
 
         <NavLink to="/collections" className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 4h12M2 8h12M2 12h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 12v8H4V4h10"/><path d="M16 2v4"/><path d="M21 7h-5"/><path d="m16 2 5 5"/>
           </svg>
-          Koleksiyonlar
+          Collections
         </NavLink>
 
         <NavLink to="/history" className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M8 5v3l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
-          Geçmiş
+          History
         </NavLink>
 
         <NavLink to="/environments" className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-             <path d="M2 13V3h12v10H2zM5 8h6M5 6h6M5 10h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
           </svg>
-          Ortamlar (Env)
+          Environments
         </NavLink>
 
         <NavLink to="/docs" className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M4 2v12h8V4.5L9.5 2H4zM9 2v3h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
           </svg>
-          Dokümanlar
-        </NavLink>
-
-        <NavLink to="/profile" className={linkClass}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="5" r="3" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-          Profil
+          Documentation
         </NavLink>
       </nav>
 
-      {/* Aktif Ortam Göstergesi — Deep Integration */}
+      {/* Aktif Ortam Göstergesi */}
       {activeEnvironment && (
-        <div className="px-4 py-3 mx-3 mb-2 bg-blue-900/10 border border-blue-500/20 rounded-lg">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
-            <span className="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Aktif Ortam</span>
+        <div className="px-5 py-4 m-4 bg-blue-900/10 border border-blue-500/10 rounded-2xl">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.6)]"></div>
+            <span className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Live Environment</span>
           </div>
-          <p className="text-white text-xs font-medium truncate">{activeEnvironment.name}</p>
+          <p className="text-white text-sm font-semibold truncate">{activeEnvironment.name}</p>
         </div>
       )}
-
-      {/* Çıkış butonu */}
-      <div className="p-3 border-t border-gray-800">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-900/20 transition-colors"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Çıkış Yap
-        </button>
-      </div>
     </aside>
   );
 };

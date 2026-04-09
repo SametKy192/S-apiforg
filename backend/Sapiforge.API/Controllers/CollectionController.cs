@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 /// Koleksiyon yönetimi endpoint'lerini sunar.
 /// </summary>
 /// 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CollectionController : ControllerBase

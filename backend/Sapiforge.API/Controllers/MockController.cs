@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 /// <summary>
 /// Mock endpoint yönetimi ve eşleştirme endpoint'lerini sunar.
 /// </summary>
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class MockController : ControllerBase

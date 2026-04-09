@@ -42,23 +42,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 // ── HttpClient — ProxyService için ────────────────────────────────
 builder.Services.AddHttpClient<IProxyService, ProxyService>();
 
-// ── JWT Authentication ─────────────────────────────────────────────
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)),
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-
 // ── CORS — React frontend'e izin ver ──────────────────────────────
 builder.Services.AddCors(options =>
 {
@@ -92,8 +75,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
 
 // ── Veri bütünlüğü kontrolü ────────────────────────────────────────

@@ -52,31 +52,35 @@ const CollectionsPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 p-8 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-12 p-8 lg:p-12 max-w-7xl mx-auto animate-in fade-in duration-700">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Collections</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage and test your API groupings</p>
+          <h1 className="text-4xl font-black text-white tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-500">
+            Collections
+          </h1>
+          <p className="text-slate-500 text-sm mt-2 font-medium">Organize, automate and collaborate on your API designs.</p>
         </div>
+        
         <div className="flex gap-3">
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="px-4 py-2 bg-gray-800 text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-700 transition-all border border-gray-700 flex items-center gap-2"
+            className="btn-ghost flex items-center gap-2 px-6 py-2.5"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
             </svg>
-            Import
+            <span className="text-[11px] font-bold uppercase tracking-wider">Import</span>
           </button>
+          
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-5 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/30 flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 px-6 py-2.5 shadow-blue-500/25"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            New Collection
+            <span className="text-[11px] font-bold uppercase tracking-wider">New Collection</span>
           </button>
         </div>
       </div>
@@ -84,96 +88,122 @@ const CollectionsPage = () => {
       {showForm && (
         <form
           onSubmit={handleCreate}
-          className="flex flex-col gap-4 p-6 bg-gray-900 rounded-2xl border border-gray-800 shadow-xl animate-in fade-in slide-in-from-top-4"
+          className="glass-card p-8 rounded-[2rem] border-white/10 animate-in slide-in-from-top-4 duration-300"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Collection Name"
-              value={newCollection.name}
-              onChange={(e) => setNewCollection({ ...newCollection, name: e.target.value })}
-              className="px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Description (optional)"
-              value={newCollection.description}
-              onChange={(e) => setNewCollection({ ...newCollection, description: e.target.value })}
-              className="px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-            />
-          </div>
-          <div className="flex gap-2 justify-end">
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="px-4 py-2 text-gray-400 hover:text-white text-sm font-medium"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-500 transition-all"
-            >
-              Create Collection
-            </button>
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Identity Service"
+                  value={newCollection.name}
+                  onChange={(e) => setNewCollection({ ...newCollection, name: e.target.value })}
+                  className="px-5 py-3 glass-item rounded-xl text-white text-sm focus:ring-2 ring-blue-500/20 border-none placeholder-slate-600"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Description</label>
+                <input
+                  type="text"
+                  placeholder="Optional context about these APIs..."
+                  value={newCollection.description}
+                  onChange={(e) => setNewCollection({ ...newCollection, description: e.target.value })}
+                  className="px-5 py-3 glass-item rounded-xl text-white text-sm focus:ring-2 ring-blue-500/20 border-none placeholder-slate-600"
+                />
+              </div>
+            </div>
+            <div className="flex gap-4 justify-end mt-2">
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="btn-ghost text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn-primary text-xs px-8"
+              >
+                Create Now
+              </button>
+            </div>
           </div>
         </form>
       )}
 
-      {/* Grid List */}
+      {/* Grid Content */}
       {isLoading ? (
-        <div className="flex flex-col items-center py-20">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-500 text-sm mt-4">Loading collections...</p>
+        <div className="flex flex-col items-center py-32">
+          <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] mt-6">Loading Workspace...</p>
         </div>
       ) : collections.length === 0 ? (
-        <div className="text-center py-20 bg-gray-900/50 rounded-3xl border border-dashed border-gray-800">
-          <p className="text-gray-500 font-medium">No collections yet. Start by creating one!</p>
+        <div className="flex flex-col items-center justify-center py-32 glass-card rounded-[3rem] border-dashed border-white/5 opacity-50">
+          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-slate-600">
+              <path d="M20 12v8H4V4h10"/><path d="M16 2v4"/><path d="M21 7h-5"/><path d="m16 2 5 5"/>
+            </svg>
+          </div>
+          <p className="text-slate-400 font-medium text-lg">Your collection shelf is empty.</p>
+          <p className="text-slate-600 text-sm mt-2">Create a collection to start grouping your API calls.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {collections.map((collection) => (
             <div
               key={collection.id}
-              className="group flex flex-col p-6 bg-gray-900 hover:bg-gray-800/80 rounded-2xl border border-gray-800 transition-all hover:shadow-2xl hover:border-blue-500/30 relative overflow-hidden"
+              className="group glass-card hover:bg-white/5 rounded-[2.5rem] p-8 border-white/5 hover:border-blue-500/20 transition-all duration-500 relative flex flex-col"
             >
-              <div className="flex flex-col gap-1 mb-6">
-                <span className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors truncate">
-                  {collection.name}
-                </span>
-                <span className="text-gray-500 text-sm line-clamp-2 h-10">
-                  {collection.description || 'No description provided.'}
-                </span>
-              </div>
+              {/* Card Decoration */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-3xl rounded-full -z-10 group-hover:bg-blue-500/10 transition-all"></div>
               
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800">
-                <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest bg-gray-800 px-2 py-1 rounded">
-                  {collection.items?.length || 0} Requests
-                </span>
+              <div className="flex items-start justify-between mb-8">
+                <div className="w-14 h-14 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-blue-500/10 transition-all border border-white/5">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-500">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => setRunnerCollection(collection)}
                     disabled={!collection.items || collection.items.length === 0}
-                    className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all disabled:opacity-30"
-                    title="Run Collection"
+                    className="p-2.5 text-emerald-400 hover:bg-emerald-400/10 rounded-xl transition-all disabled:opacity-30"
+                    title="Fire Collection Runner"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
                   </button>
                   <button
                     onClick={() => handleDelete(collection.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
-                    title="Delete Collection"
+                    className="p-2.5 text-slate-500 hover:text-rose-400 hover:bg-rose-400/10 rounded-xl transition-all"
+                    title="Destroy Collection"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
                     </svg>
                   </button>
                 </div>
+              </div>
+
+              <h2 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate mb-2">
+                {collection.name}
+              </h2>
+              <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed h-10 mb-8 font-medium">
+                {collection.description || "No metadata provided for this workspace."}
+              </p>
+              
+              <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    {collection.items?.length || 0} Endpoints
+                  </span>
+                </div>
+                <div className="text-[10px] font-bold text-slate-600 italic">v1.2</div>
               </div>
             </div>
           ))}

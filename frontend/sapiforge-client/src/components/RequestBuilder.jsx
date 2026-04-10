@@ -5,11 +5,11 @@ import CodeSnippetModal from './CodeSnippetModal';
 import { executeScript } from '../services/scriptService';
 
 const METHODS = [
-  { value: 'GET', color: 'text-green-400' },
-  { value: 'POST', color: 'text-blue-400' },
-  { value: 'PUT', color: 'text-yellow-400' },
-  { value: 'DELETE', color: 'text-red-400' },
-  { value: 'PATCH', color: 'text-purple-400' },
+  { value: 'GET', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  { value: 'POST', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+  { value: 'PUT', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+  { value: 'DELETE', color: 'text-rose-400', bg: 'bg-rose-500/10' },
+  { value: 'PATCH', color: 'text-violet-400', bg: 'bg-violet-500/10' },
 ];
 
 const RequestBuilder = ({ onSend, isLoading, initialData }) => {
@@ -27,7 +27,6 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
   const [environments, setEnvironments] = useState([]);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
 
-  // Sync local state to store whenever it changes
   useEffect(() => {
     setCurrentRequest({ method, url, headers, body, preRequestScript, testScript });
   }, [method, url, headers, body, preRequestScript, testScript]);
@@ -88,10 +87,8 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
     
     let currentEnv = { ...activeEnvVars };
 
-    // 1. Run Pre-request Script
     if (preRequestScript && activeEnvironment) {
         currentEnv = executeScript(preRequestScript, { environment: currentEnv });
-        // Persist env changes if any
         if (JSON.stringify(currentEnv) !== JSON.stringify(activeEnvVars)) {
             await handleEnvChange(activeEnvironment.id, currentEnv);
         }
@@ -101,10 +98,6 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
     const substitutedHeaders = replaceVariables(headers, currentEnv);
     const substitutedBody = replaceVariables(body, currentEnv);
 
-    // I need to intercept the response for Test Scripts
-    // But onSend is handled in RequestPage. 
-    // This is complex for a simple turn. I'll just send it.
-    // Ideally, RequestPage would return the response or handle tests.
     onSend({ 
       url: substitutedUrl, 
       method, 
@@ -124,144 +117,159 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
   const selectedMethod = METHODS.find((m) => m.value === method) || METHODS[0];
 
   return (
-    <div className="flex flex-col gap-4 bg-gray-800 rounded-xl border border-gray-700 p-4 shadow-lg">
-      <div className="flex gap-2">
-        <select
-          value={method}
-          onChange={(e) => setMethod(e.target.value)}
-          className={`px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-sm font-mono font-medium focus:outline-none focus:border-blue-500 ${selectedMethod.color}`}
-        >
-          {METHODS.map((m) => (
-            <option key={m.value} value={m.value} className="text-white">
-              {m.value}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          placeholder="https://api.example.com/endpoint veya {{baseUrl}}/users"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          className="flex-1 px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm font-mono focus:outline-none focus:border-blue-500 placeholder-gray-600"
-        />
-
-        <div className="flex items-center px-1 bg-gray-900 border border-gray-700 rounded-lg focus-within:border-blue-500 relative group">
-          <span className="text-[9px] text-gray-500 uppercase font-bold ml-2 mr-1">Env:</span>
+    <div className="glass-card rounded-[2rem] p-6 lg:p-8 flex flex-col gap-8">
+      {/* Search & Action Bar */}
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex-1 flex gap-3 p-1.5 glass-item rounded-2xl items-center focus-within:ring-2 ring-blue-500/20 transition-all">
           <select
-            value={activeEnvironment?.id || ''}
-            onChange={(e) => handleEnvChange(e.target.value)}
-            className="bg-transparent text-xs text-blue-400 font-medium py-1 px-1 focus:outline-none min-w-[100px] cursor-pointer"
+            value={method}
+            onChange={(e) => setMethod(e.target.value)}
+            className={`w-28 pl-4 pr-2 py-2 bg-transparent border-none rounded-xl text-xs font-bold tracking-widest focus:ring-0 cursor-pointer ${selectedMethod.color}`}
           >
-            <option value="" className="bg-gray-900 text-gray-400">Seçiniz...</option>
-            {environments.map((env) => (
-              <option key={env.id} value={env.id} className="bg-gray-900 text-white">
-                {env.name}
+            {METHODS.map((m) => (
+              <option key={m.value} value={m.value} className="bg-slate-900 text-white">
+                {m.value}
               </option>
             ))}
           </select>
-          
-          {activeEnvVars && Object.keys(activeEnvVars).length > 0 && (
-            <div className="absolute top-full mt-2 left-0 z-10 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl p-2 invisible group-hover:visible group-focus-within:visible">
-              <span className="text-[10px] text-gray-500 font-bold uppercase mb-2 block">Aktif Değişkenler</span>
-              <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
-                {Object.entries(activeEnvVars).map(([key, value]) => (
-                  <div key={key} className="flex flex-col border-b border-gray-800 last:border-0 pb-1">
-                    <span className="text-[10px] text-blue-400 font-mono">{`{{${key}}}`}</span>
-                    <span className="text-[9px] text-gray-500 truncate">{value}</span>
-                  </div>
-                ))}
+
+          <div className="w-px h-6 bg-white/10"></div>
+
+          <input
+            type="text"
+            placeholder="https://api.example.com/endpoint veya {{baseUrl}}/users"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            className="flex-1 bg-transparent border-none text-white text-sm font-mono placeholder-slate-500 focus:ring-0 ml-2"
+          />
+
+          <div className="hidden lg:flex items-center gap-2 pr-2">
+            <div className="relative group">
+              <div className="flex items-center gap-2 px-3 py-2 glass-item rounded-xl cursor-pointer">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                <select
+                  value={activeEnvironment?.id || ''}
+                  onChange={(e) => handleEnvChange(e.target.value)}
+                  className="bg-transparent text-[10px] font-bold text-slate-300 border-none p-0 focus:ring-0 uppercase tracking-wider"
+                >
+                  <option value="" className="bg-slate-900">NO ENV</option>
+                  {environments.map((env) => (
+                    <option key={env.id} value={env.id} className="bg-slate-900 text-white">
+                      {env.name.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
               </div>
+
+              {activeEnvVars && Object.keys(activeEnvVars).length > 0 && (
+                <div className="absolute top-full mt-3 right-0 z-20 w-64 glass-card p-4 rounded-2xl invisible group-hover:visible animate-in fade-in slide-in-from-top-2 duration-200">
+                  <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Live Variables</h4>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+                    {Object.entries(activeEnvVars).map(([key, value]) => (
+                      <div key={key} className="p-2 glass-item rounded-lg">
+                        <div className="text-[10px] text-blue-400 font-mono mb-1">{`{{${key}}}`}</div>
+                        <div className="text-[10px] text-slate-400 truncate">{String(value)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => setIsCodeModalOpen(true)}
+            className="btn-ghost flex items-center gap-2 px-5"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/>
+            </svg>
+            <span className="text-xs font-bold uppercase tracking-wider">Code</span>
+          </button>
+
+          <button
+            onClick={handleSend}
+            disabled={isLoading || !url}
+            className="btn-primary min-w-[120px] flex items-center justify-center gap-2"
+          >
+            {isLoading ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+                </svg>
+                <span className="text-xs font-bold uppercase tracking-wider">Send</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Configuration Tabs */}
+      <div className="flex flex-col gap-6">
+        <div className="flex gap-1.5 p-1 glass-item rounded-2xl self-start">
+          {['headers', 'body', 'scripts'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-2 rounded-xl text-[11px] font-bold tracking-widest uppercase transition-all ${
+                activeTab === tab
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                  : 'text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Editor Area */}
+        <div className="glass-item rounded-3xl p-4 min-h-[220px] flex flex-col focus-within:ring-1 ring-white/10 transition-all">
+          {activeTab === 'headers' && (
+            <textarea
+              placeholder={'{\n  "Authorization": "Bearer token",\n  "Content-Type": "application/json"\n}'}
+              value={headers}
+              onChange={(e) => setHeaders(e.target.value)}
+              className="flex-1 bg-transparent border-none text-slate-300 text-xs font-mono placeholder-slate-600 resize-none focus:ring-0 leading-relaxed"
+            />
+          )}
+          {activeTab === 'body' && (
+            <textarea
+              placeholder={'{\n  "key": "value"\n}'}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              className="flex-1 bg-transparent border-none text-slate-300 text-xs font-mono placeholder-slate-600 resize-none focus:ring-0 leading-relaxed"
+            />
+          )}
+          {activeTab === 'scripts' && (
+            <div className="flex flex-col gap-4 flex-1">
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setScriptTab('pre')}
+                  className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg transition-all ${scriptTab === 'pre' ? 'bg-blue-500/20 text-blue-400' : 'text-slate-500'}`}
+                >
+                  Pre-request
+                </button>
+                <button 
+                  onClick={() => setScriptTab('test')}
+                  className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg transition-all ${scriptTab === 'test' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-500'}`}
+                >
+                  Post-Tests
+                </button>
+              </div>
+              <textarea
+                placeholder={scriptTab === 'pre' ? '// pm.environment.set("key", "value");' : '// const data = pm.response.json();'}
+                value={scriptTab === 'pre' ? preRequestScript : testScript}
+                onChange={(e) => scriptTab === 'pre' ? setPreRequestScript(e.target.value) : setTestScript(e.target.value)}
+                className={`flex-1 bg-transparent border-none text-xs font-mono resize-none focus:ring-0 leading-relaxed ${scriptTab === 'pre' ? 'text-blue-300' : 'text-indigo-300'}`}
+              />
             </div>
           )}
         </div>
-
-        <button
-          onClick={() => setIsCodeModalOpen(true)}
-          className="px-4 py-2 bg-gray-700 text-gray-200 rounded-lg text-sm font-medium hover:bg-gray-600 transition-colors flex items-center gap-2"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-          Code
-        </button>
-
-        <button
-          onClick={handleSend}
-          disabled={isLoading || !url}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-900/20 transition-all active:scale-95"
-        >
-          {isLoading ? 'Gönderiliyor...' : 'Gönder'}
-        </button>
-      </div>
-
-      <div className="flex gap-4 border-b border-gray-700">
-        {['headers', 'body', 'scripts'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium capitalize transition-all border-b-2 -mb-px ${
-              activeTab === tab
-                ? 'text-blue-400 border-blue-400'
-                : 'text-gray-500 border-transparent hover:text-gray-300'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      <div className="min-h-[150px]">
-        {activeTab === 'headers' && (
-          <textarea
-            placeholder={'{\n  "Authorization": "Bearer token",\n  "Content-Type": "application/json"\n}'}
-            value={headers}
-            onChange={(e) => setHeaders(e.target.value)}
-            className="w-full h-[150px] px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm font-mono focus:outline-none focus:border-blue-500 placeholder-gray-600 resize-none"
-          />
-        )}
-        {activeTab === 'body' && (
-          <textarea
-            placeholder={'{\n  "key": "value"\n}'}
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            className="w-full h-[150px] px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm font-mono focus:outline-none focus:border-blue-500 placeholder-gray-600 resize-none"
-          />
-        )}
-        {activeTab === 'scripts' && (
-          <div className="flex flex-col gap-2 h-[150px]">
-            <div className="flex gap-2">
-              <button 
-                onClick={() => setScriptTab('pre')}
-                className={`text-[10px] px-2 py-1 rounded ${scriptTab === 'pre' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'}`}
-              >
-                Pre-request
-              </button>
-              <button 
-                onClick={() => setScriptTab('test')}
-                className={`text-[10px] px-2 py-1 rounded ${scriptTab === 'test' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'}`}
-              >
-                Tests
-              </button>
-            </div>
-            {scriptTab === 'pre' ? (
-              <textarea
-                placeholder={'// pm.environment.set("key", "value");'}
-                value={preRequestScript}
-                onChange={(e) => setPreRequestScript(e.target.value)}
-                className="flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-blue-300 text-xs font-mono focus:outline-none focus:border-blue-500 resize-none"
-              />
-            ) : (
-              <textarea
-                placeholder={'// const data = pm.response.json();'}
-                value={testScript}
-                onChange={(e) => setTestScript(e.target.value)}
-                className="flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-yellow-300 text-xs font-mono focus:outline-none focus:border-blue-500 resize-none"
-              />
-            )}
-          </div>
-        )}
       </div>
 
       <CodeSnippetModal 

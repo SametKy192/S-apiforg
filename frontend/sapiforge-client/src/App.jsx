@@ -10,17 +10,25 @@ import DocsPage from './pages/DocsPage';
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="flex h-screen bg-gray-950 overflow-hidden">
+      <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden font-outfit">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto">
-          <Routes>
-            <Route path="/" element={<RequestPage />} />
-            <Route path="/mock" element={<MockPage />} />
-            <Route path="/collections" element={<CollectionsPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/environments" element={<EnvironmentPage />} />
-            <Route path="/docs" element={<DocsPage />} />
-          </Routes>
+        <main className="flex-1 overflow-y-auto relative">
+          {/* Main Content Background Blur */}
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
+            <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full"></div>
+            <div className="absolute bottom-[-10%] left-[5%] w-[30%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full"></div>
+          </div>
+          
+          <div className="h-full">
+            <Routes>
+              <Route path="/" element={<RequestPage />} />
+              <Route path="/mock" element={<MockPage />} />
+              <Route path="/collections" element={<CollectionsPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/environments" element={<EnvironmentPage />} />
+              <Route path="/docs" element={<DocsPage />} />
+            </Routes>
+          </div>
         </main>
       </div>
     </BrowserRouter>

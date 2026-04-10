@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAllCollections, addItemToCollection } from '../services/collectionService';
 
-// ── Response Viewer ─────────────────────────────────────────────
-// Backend'den dönen response'u görsel olarak gösterir
 const ResponseViewer = ({ response, requestId }) => {
   const [copied, setCopied] = useState(false);
   const [collections, setCollections] = useState([]);
@@ -10,7 +8,6 @@ const ResponseViewer = ({ response, requestId }) => {
   const [saved, setSaved] = useState(false);
   const [showCollectionPanel, setShowCollectionPanel] = useState(false);
 
-  // Koleksiyonları getir
   useEffect(() => {
     const fetchCollections = async () => {
       try {
@@ -26,12 +23,11 @@ const ResponseViewer = ({ response, requestId }) => {
 
   const [viewMode, setViewMode] = useState('pretty'); // 'pretty' or 'raw'
 
-  // Status koduna göre renk belirle
   const getStatusColor = (status) => {
-    if (status < 300) return 'text-green-400 bg-green-900/30';
-    if (status < 400) return 'text-yellow-400 bg-yellow-900/30';
-    if (status < 500) return 'text-orange-400 bg-orange-900/10 border border-orange-500/20';
-    return 'text-red-400 bg-red-900/20 border border-red-500/30';
+    if (status < 300) return 'text-emerald-400 bg-emerald-500/10 shadow-emerald-500/20';
+    if (status < 400) return 'text-amber-400 bg-amber-500/10 shadow-amber-500/20';
+    if (status < 500) return 'text-rose-400 bg-rose-500/10 shadow-rose-500/20';
+    return 'text-red-400 bg-red-900/20 border-red-500/30 shadow-red-500/20';
   };
 
   const formatBody = (body, mode) => {
@@ -62,100 +58,109 @@ const ResponseViewer = ({ response, requestId }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-gray-900/50 rounded-xl border border-gray-800 p-5 shadow-inner">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold font-mono ${getStatusColor(response.statusCode)}`}>
-            <span className="w-2 h-2 rounded-full bg-current animate-pulse"></span>
+    <div className="glass-card rounded-[2rem] p-6 lg:p-8 flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Response Metadata Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-6">
+          <div className={`flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-black font-mono shadow-lg ${getStatusColor(response.statusCode)}`}>
+            <div className="w-2 h-2 rounded-full bg-current animate-pulse"></div>
             {response.statusCode}
           </div>
-          <div className="flex items-center gap-3 text-gray-500 text-xs font-medium">
-            <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {response.durationMs}ms
-            </span>
-            <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-              </svg>
-              {response.sizeBytes < 1024 ? `${response.sizeBytes} B` : `${(response.sizeBytes / 1024).toFixed(1)} KB`}
-            </span>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Time</span>
+              <span className="text-xs font-semibold text-slate-300 tracking-tight">{response.durationMs}ms</span>
+            </div>
+            <div className="w-px h-6 bg-white/5"></div>
+            <div className="flex flex-col">
+              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Size</span>
+              <span className="text-xs font-semibold text-slate-300 tracking-tight">
+                {response.sizeBytes < 1024 ? `${response.sizeBytes} B` : `${(response.sizeBytes / 1024).toFixed(1)} KB`}
+              </span>
+            </div>
           </div>
         </div>
 
         <button
           onClick={() => setShowCollectionPanel(!showCollectionPanel)}
-          className="text-xs font-semibold text-blue-400 hover:text-blue-300 bg-blue-500/5 hover:bg-blue-500/10 transition-all px-3 py-1.5 rounded-lg border border-blue-500/20"
+          className={`btn-ghost text-[10px] font-bold uppercase tracking-wider px-4 py-2 ${saved ? 'text-emerald-400' : ''}`}
         >
-          {saved ? 'Saved!' : 'Save to Collection'}
+          {saved ? 'Saved Successfully' : 'Save to Collection'}
         </button>
       </div>
 
       {showCollectionPanel && (
-        <div className="flex items-center gap-2 p-3 bg-gray-950 rounded-xl border border-gray-800">
+        <div className="p-4 glass-item rounded-2xl flex items-center gap-2 animate-in slide-in-from-top-2">
           <select
             value={selectedCollection}
             onChange={(e) => setSelectedCollection(e.target.value)}
-            className="flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+            className="flex-1 bg-transparent text-sm text-white border-none focus:ring-0"
           >
             {collections.length === 0 ? (
               <option>No collections yet</option>
             ) : (
               collections.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+                <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>
               ))
             )}
           </select>
           <button
             onClick={handleSaveToCollection}
             disabled={collections.length === 0}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg text-sm disabled:opacity-50 transition-all"
+            className="btn-primary text-xs px-4 py-1.5"
           >
-            Save
+            Confirm
           </button>
         </div>
       )}
 
-      <div className="space-y-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Body</span>
-              <div className="flex bg-gray-950 rounded-md p-0.5 border border-gray-800">
-                <button 
-                  onClick={() => setViewMode('pretty')}
-                  className={`px-2 py-0.5 text-[10px] rounded transition-all ${viewMode === 'pretty' ? 'bg-gray-800 text-blue-400' : 'text-gray-600 hover:text-gray-400'}`}
-                >
-                  Pretty
-                </button>
-                <button 
-                  onClick={() => setViewMode('raw')}
-                  className={`px-2 py-0.5 text-[10px] rounded transition-all ${viewMode === 'raw' ? 'bg-gray-800 text-blue-400' : 'text-gray-600 hover:text-gray-400'}`}
-                >
-                  Raw
-                </button>
-              </div>
+      {/* Main Content Area */}
+      <div className="flex flex-col gap-6">
+        {/* Toggle & Export Controls */}
+        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mr-2">Body</span>
+            <div className="flex p-1 glass-item rounded-xl">
+              <button 
+                onClick={() => setViewMode('pretty')}
+                className={`px-4 py-1 text-[10px] font-bold rounded-lg transition-all ${viewMode === 'pretty' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500'}`}
+              >
+                PRETTY
+              </button>
+              <button 
+                onClick={() => setViewMode('raw')}
+                className={`px-4 py-1 text-[10px] font-bold rounded-lg transition-all ${viewMode === 'raw' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500'}`}
+              >
+                RAW
+              </button>
             </div>
-            <button
-              onClick={handleCopy}
-              className="text-[10px] font-bold text-gray-400 hover:text-white transition-all px-2 py-1 rounded bg-gray-800 hover:bg-gray-700"
-            >
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
           </div>
-          <div className="relative group">
-            <pre className="max-h-[500px] px-4 py-3 bg-gray-950 rounded-xl text-green-400/90 text-sm font-mono overflow-auto border border-gray-800 custom-scrollbar whitespace-pre-wrap">
-              {formatBody(response.body, viewMode)}
-            </pre>
-          </div>
+          
+          <button
+            onClick={handleCopy}
+            className="btn-ghost px-3 py-1.5 flex items-center gap-2 group"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:scale-110 transition-transform">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+            </svg>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{copied ? 'COPIED' : 'COPY'}</span>
+          </button>
         </div>
 
+        {/* Code Content */}
+        <div className="relative group">
+          <div className="absolute inset-0 bg-blue-500/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <pre className="max-h-[600px] p-6 glass-item rounded-[1.5rem] text-emerald-400/90 text-[13px] font-mono overflow-auto leading-relaxed custom-scrollbar whitespace-pre-wrap relative z-10">
+            {formatBody(response.body, viewMode)}
+          </pre>
+        </div>
+
+        {/* Headers Section */}
         {response.headers && (
-          <div className="flex flex-col gap-2 border-t border-gray-800 pt-4">
-            <span className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Headers</span>
-            <pre className="max-h-[200px] px-4 py-3 bg-gray-950 rounded-xl text-gray-400 text-xs font-mono overflow-auto border border-gray-800 custom-scrollbar">
+          <div className="flex flex-col gap-4 mt-4">
+            <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Response Headers</span>
+            <pre className="max-h-[250px] p-4 glass-item rounded-2xl text-slate-400 text-[11px] font-mono overflow-auto border-none">
               {formatBody(response.headers, 'pretty')}
             </pre>
           </div>

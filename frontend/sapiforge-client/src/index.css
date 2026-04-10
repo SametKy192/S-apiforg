@@ -1,3 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --bg-main: #020617;
+  --bg-sidebar: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --accent-primary: #38bdf8;
+  --accent-secondary: #818cf8;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-danger: #ef4444;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-glass: rgba(255, 255, 255, 0.08);
+}
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased;
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Classes */
+  .glass-card {
+    @apply bg-slate-900/40 backdrop-blur-xl border border-white/5 shadow-2xl;
+  }
+
+  .glass-item {
+    @apply bg-white/5 hover:bg-white/10 border border-white/5 transition-all duration-300;
+  }
+
+  /* Premium Buttons */
+  .btn-primary {
+    @apply px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 
+           hover:from-blue-500 hover:to-indigo-500 text-white font-semibold 
+           shadow-lg shadow-blue-500/20 active:scale-95 transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 
+           text-slate-300 hover:text-white border border-white/5 transition-all duration-200;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700/50 rounded-full hover:bg-slate-600;
+  }
+
+  /* Animated Border Gradient */
+  .animated-border {
+    position: relative;
+    border-radius: 0.75rem;
+  }
+
+  .animated-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(90deg, #3b82f6, #818cf8, #3b82f6);
+    background-size: 200% auto;
+    border-radius: 0.75rem;
+    z-index: -1;
+    animation: borderGradient 3s linear infinite;
+    opacity: 0.5;
+  }
+}
+
+@keyframes borderGradient {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { getAllCollections, createCollection, deleteCollection } from '../services/collectionService';
 import CollectionRunnerModal from '../components/CollectionRunnerModal';
 import ImportPostmanModal from '../components/ImportPostmanModal';
+import DocumentationModal from '../components/DocumentationModal';
+import { getCollectionById } from '../services/collectionService';
 
 const CollectionsPage = () => {
   const [collections, setCollections] = useState([]);
@@ -11,6 +11,8 @@ const CollectionsPage = () => {
   
   const [runnerCollection, setRunnerCollection] = useState(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [docCollection, setDocCollection] = useState(null);
+  const [isDocLoading, setIsDocLoading] = useState(false);
 
   // Koleksiyonları getir
   const fetchCollections = async () => {
@@ -48,6 +50,19 @@ const CollectionsPage = () => {
       setCollections(collections.filter((c) => c.id !== id));
     } catch (err) {
       console.error('Koleksiyon silinemedi:', err);
+    }
+  };
+
+  const handleExport = async (id) => {
+    setIsDocLoading(true);
+    try {
+      const fullCollection = await getCollectionById(id);
+      setDocCollection(fullCollection);
+    } catch (err) {
+      console.error('Dökümantasyon hazırlanamadı:', err);
+      alert('Koleksiyon detayları alınamadı.');
+    } finally {
+      setIsDocLoading(false);
     }
   };
 
@@ -178,6 +193,15 @@ const CollectionsPage = () => {
                     </svg>
                   </button>
                   <button
+                    onClick={() => handleExport(collection.id)}
+                    className="p-2.5 text-blue-400 hover:bg-blue-400/10 rounded-xl transition-all"
+                    title="Export Documentation"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+                    </svg>
+                  </button>
+                  <button
                     onClick={() => handleDelete(collection.id)}
                     className="p-2.5 text-slate-500 hover:text-rose-400 hover:bg-rose-400/10 rounded-xl transition-all"
                     title="Destroy Collection"
@@ -222,6 +246,21 @@ const CollectionsPage = () => {
         onClose={() => setIsImportModalOpen(false)} 
         onImportSuccess={fetchCollections}
       />
+
+      <DocumentationModal
+        isOpen={!!docCollection}
+        onClose={() => setDocCollection(null)}
+        collection={docCollection}
+      />
+
+      {isDocLoading && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-gray-900/80 p-8 rounded-3xl border border-white/10 flex flex-col items-center gap-4">
+             <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+             <p className="text-white text-xs font-bold uppercase tracking-widest">Compiling Docs...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

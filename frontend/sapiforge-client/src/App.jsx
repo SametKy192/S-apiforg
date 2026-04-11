@@ -6,6 +6,8 @@ import CollectionsPage from './pages/CollectionsPage';
 import HistoryPage from './pages/HistoryPage';
 import EnvironmentPage from './pages/EnvironmentPage';
 import DocsPage from './pages/DocsPage';
+import DatabasePage from './pages/DatabasePage';
+import WorkflowDesignerPage from './pages/WorkflowDesignerPage';
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/environments" element={<EnvironmentPage />} />
               <Route path="/docs" element={<DocsPage />} />
+              <Route path="/database" element={<DatabasePage />} />
+              <Route path="/workflow" element={<WorkflowDesignerPage />} />
             </Routes>
           </div>
         </main>

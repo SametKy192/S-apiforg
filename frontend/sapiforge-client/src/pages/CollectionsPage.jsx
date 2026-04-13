@@ -1,9 +1,13 @@
-import CollectionRunnerModal from '../components/CollectionRunnerModal';
-import ImportPostmanModal from '../components/ImportPostmanModal';
-import DocumentationModal from '../components/DocumentationModal';
-import { getCollectionById } from '../services/collectionService';
+import { getCollectionById, getAllCollections, createCollection, deleteCollection } from '../services/collectionService';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
+import { useState, useEffect } from 'react';
 
 const CollectionsPage = () => {
+  const { language } = useSettingsStore();
+  const t = translations[language].collections;
+  const common = translations[language].common;
+  
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -71,10 +75,10 @@ const CollectionsPage = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black text-white tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-500">
-            Collections
+          <h1 className="text-4xl font-black text-[var(--text-primary)] tracking-tight">
+            {t.title}
           </h1>
-          <p className="text-slate-500 text-sm mt-2 font-medium">Organize, automate and collaborate on your API designs.</p>
+          <p className="text-[var(--text-secondary)] text-sm mt-2 font-medium">{t.subtitle}</p>
         </div>
         
         <div className="flex gap-3">
@@ -85,7 +89,7 @@ const CollectionsPage = () => {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
             </svg>
-            <span className="text-[11px] font-bold uppercase tracking-wider">Import</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">{t.import}</span>
           </button>
           
           <button
@@ -95,7 +99,7 @@ const CollectionsPage = () => {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            <span className="text-[11px] font-bold uppercase tracking-wider">New Collection</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">{t.new}</span>
           </button>
         </div>
       </div>
@@ -135,13 +139,13 @@ const CollectionsPage = () => {
                 onClick={() => setShowForm(false)}
                 className="btn-ghost text-xs"
               >
-                Cancel
+                {common.cancel}
               </button>
               <button
                 type="submit"
                 className="btn-primary text-xs px-8"
               >
-                Create Now
+                {common.create}
               </button>
             </div>
           </div>
@@ -152,7 +156,7 @@ const CollectionsPage = () => {
       {isLoading ? (
         <div className="flex flex-col items-center py-32">
           <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] mt-6">Loading Workspace...</p>
+          <p className="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-[0.2em] mt-6">{common.loading}</p>
         </div>
       ) : collections.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-32 glass-card rounded-[3rem] border-dashed border-white/5 opacity-50">
@@ -213,7 +217,7 @@ const CollectionsPage = () => {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate mb-2">
+              <h2 className="text-xl font-bold text-[var(--text-primary)] group-hover:text-blue-400 transition-colors truncate mb-2">
                 {collection.name}
               </h2>
               <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed h-10 mb-8 font-medium">
@@ -223,8 +227,8 @@ const CollectionsPage = () => {
               <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    {collection.items?.length || 0} Endpoints
+                  <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">
+                    {collection.items?.length || 0} {t.endpoints}
                   </span>
                 </div>
                 <div className="text-[10px] font-bold text-slate-600 italic">v1.2</div>

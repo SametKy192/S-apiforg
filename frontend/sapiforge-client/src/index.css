@@ -6,33 +6,42 @@
 
 :root {
   --bg-main: #020617;
-  --bg-sidebar: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
-  --accent-primary: #38bdf8;
-  --accent-secondary: #818cf8;
-  --accent-success: #10b981;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
+  --bg-sidebar: #0b0f1a;
+  --bg-card: rgba(30, 41, 59, 0.4);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glass: rgba(255, 255, 255, 0.05);
+  --accent-blue: #3b82f6;
+}
+
+.light {
+  --bg-main: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: rgba(241, 245, 249, 0.8);
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border-glass: rgba(15, 23, 42, 0.08);
+  --accent-blue: #2563eb;
 }
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 antialiased;
+    @apply antialiased transition-colors duration-500;
     font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
   }
 }
 
 @layer components {
   /* Glassmorphism Classes */
   .glass-card {
-    @apply bg-slate-900/40 backdrop-blur-xl border border-white/5 shadow-2xl;
+    background-color: var(--bg-card);
+    @apply backdrop-blur-xl border border-[var(--border-glass)] shadow-2xl;
   }
 
   .glass-item {
-    @apply bg-white/5 hover:bg-white/10 border border-white/5 transition-all duration-300;
+    @apply bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-[var(--border-glass)] transition-all duration-300;
   }
 
   /* Premium Buttons */
@@ -43,8 +52,9 @@
   }
 
   .btn-ghost {
-    @apply px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 
-           text-slate-300 hover:text-white border border-white/5 transition-all duration-200;
+    background-color: var(--border-glass);
+    @apply px-4 py-2 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 
+           text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-glass)] transition-all duration-200;
   }
 
   /* Custom Scrollbar */

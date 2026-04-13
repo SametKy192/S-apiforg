@@ -3,10 +3,15 @@ import RequestBuilder from '../components/RequestBuilder';
 import ResponseViewer from '../components/ResponseViewer';
 import { sendRequest } from '../services/requestService';
 import useRequestStore from '../store/requestStore';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
 
 // ── Request sayfası ─────────────────────────────────────────────
 // Kullanıcının API isteği gönderdiği ana sayfa
 const RequestPage = () => {
+  const { language } = useSettingsStore();
+  const sidebarT = translations[language].sidebar;
+
   const { 
     tabs, 
     activeTabId, 
@@ -44,9 +49,9 @@ const RequestPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-950">
+    <div className="flex flex-col h-full bg-[var(--bg-main)]">
       {/* Tab bar - Enhanced Visibility */}
-      <div className="flex items-center gap-0 px-2 pt-2 border-b border-gray-800 bg-gray-900/80 backdrop-blur-md">
+      <div className="flex items-center gap-0 px-2 pt-2 border-b border-[var(--border-glass)] bg-[var(--bg-sidebar)] backdrop-blur-md">
         {tabs.map((tab) => (
           <div
             key={tab.id}
@@ -59,9 +64,9 @@ const RequestPage = () => {
             `}
           >
             {/* Status dot or icon */}
-            <div className={`w-1.5 h-1.5 rounded-full ${activeTabId === tab.id ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'bg-gray-700'}`}></div>
+            <div className={`w-1.5 h-1.5 rounded-full ${activeTabId === tab.id ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'bg-[var(--border-glass)]'}`}></div>
             
-            <span className="truncate max-w-[140px] tracking-tight">{tab.name || 'New Request'}</span>
+            <span className="truncate max-w-[140px] tracking-tight">{tab.name || (language === 'tr' ? 'Yeni İstek' : 'New Request')}</span>
             
             <button
               onClick={(e) => {
@@ -71,8 +76,8 @@ const RequestPage = () => {
               className={`
                 p-1 ml-2 rounded-md transition-all duration-200
                 ${activeTabId === tab.id 
-                  ? 'text-gray-600 hover:text-red-400 hover:bg-red-400/10' 
-                  : 'opacity-0 group-hover:opacity-100 text-gray-700 hover:text-red-400 hover:bg-red-400/10'}
+                  ? 'text-[var(--text-secondary)] hover:text-red-400 hover:bg-red-400/10' 
+                  : 'opacity-0 group-hover:opacity-100 text-[var(--text-secondary)] hover:text-red-400 hover:bg-red-400/10'}
               `}
             >
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,7 +87,7 @@ const RequestPage = () => {
 
             {/* Inactive tab separator */}
             {activeTabId !== tab.id && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-4 bg-gray-800 group-hover:hidden"></div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-4 bg-[var(--border-glass)] group-hover:hidden"></div>
             )}
           </div>
         ))}
@@ -90,13 +95,13 @@ const RequestPage = () => {
         {/* New Tab Button - More prominent */}
         <button
           onClick={addTab}
-          className="flex items-center gap-2 px-4 py-2 ml-4 text-xs font-bold text-gray-500 hover:text-blue-400 hover:bg-blue-500/5 border border-transparent hover:border-blue-500/20 rounded-xl transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2 ml-4 text-xs font-bold text-[var(--text-secondary)] hover:text-blue-400 hover:bg-blue-500/5 border border-transparent hover:border-blue-500/20 rounded-xl transition-all active:scale-95"
           title="New Request Tab"
         >
-          <svg className="w-5 h-5 p-1 bg-gray-800 rounded-lg group-hover:bg-blue-500/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="12 4v16m8-8H4" />
+          <svg className="w-5 h-5 p-1 bg-black/10 dark:bg-white/5 rounded-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
           </svg>
-          <span className="uppercase tracking-widest hidden lg:block">Add Tab</span>
+          <span className="uppercase tracking-widest hidden lg:block">{language === 'tr' ? 'Sekme Ekle' : 'Add Tab'}</span>
         </button>
       </div>
 

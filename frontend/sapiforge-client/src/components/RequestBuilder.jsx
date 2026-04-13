@@ -3,6 +3,8 @@ import useRequestStore from '../store/requestStore';
 import { getAllEnvironments, updateEnvironment } from '../services/environmentService';
 import CodeSnippetModal from './CodeSnippetModal';
 import { executeScript } from '../services/scriptService';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
 
 const METHODS = [
   { value: 'GET', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
@@ -14,6 +16,8 @@ const METHODS = [
 
 const RequestBuilder = ({ onSend, isLoading, initialData }) => {
   const { setActiveEnvironment, activeEnvironment, setCurrentRequest } = useRequestStore();
+  const { language } = useSettingsStore();
+  const common = translations[language].common;
 
   const [method, setMethod] = useState(initialData?.method || 'GET');
   const [url, setUrl] = useState(initialData?.url || '');
@@ -127,21 +131,21 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
             className={`w-28 pl-4 pr-2 py-2 bg-transparent border-none rounded-xl text-xs font-bold tracking-widest focus:ring-0 cursor-pointer ${selectedMethod.color}`}
           >
             {METHODS.map((m) => (
-              <option key={m.value} value={m.value} className="bg-slate-900 text-white">
+              <option key={m.value} value={m.value} className="bg-[var(--bg-sidebar)] text-[var(--text-primary)]">
                 {m.value}
               </option>
             ))}
           </select>
 
-          <div className="w-px h-6 bg-white/10"></div>
+          <div className="w-px h-6 bg-[var(--border-glass)]"></div>
 
           <input
             type="text"
-            placeholder="https://api.example.com/endpoint veya {{baseUrl}}/users"
+            placeholder={language === 'tr' ? "URL girin veya {{degisken}} kullanın" : "https://api.example.com/endpoint or {{baseUrl}}/users"}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="flex-1 bg-transparent border-none text-white text-sm font-mono placeholder-slate-500 focus:ring-0 ml-2"
+            className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-sm font-mono placeholder-[var(--text-secondary)] focus:ring-0 ml-2"
           />
 
           <div className="hidden lg:flex items-center gap-2 pr-2">
@@ -151,11 +155,11 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
                 <select
                   value={activeEnvironment?.id || ''}
                   onChange={(e) => handleEnvChange(e.target.value)}
-                  className="bg-transparent text-[10px] font-bold text-slate-300 border-none p-0 focus:ring-0 uppercase tracking-wider"
+                  className="bg-transparent text-[10px] font-bold text-[var(--text-secondary)] border-none p-0 focus:ring-0 uppercase tracking-wider"
                 >
-                  <option value="" className="bg-slate-900">NO ENV</option>
+                  <option value="" className="bg-[var(--bg-sidebar)]">NO ENV</option>
                   {environments.map((env) => (
-                    <option key={env.id} value={env.id} className="bg-slate-900 text-white">
+                    <option key={env.id} value={env.id} className="bg-[var(--bg-sidebar)] text-[var(--text-primary)]">
                       {env.name.toUpperCase()}
                     </option>
                   ))}
@@ -202,7 +206,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
                 </svg>
-                <span className="text-xs font-bold uppercase tracking-wider">Send</span>
+                <span className="text-xs font-bold uppercase tracking-wider">{common.send}</span>
               </>
             )}
           </button>
@@ -234,7 +238,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
               placeholder={'{\n  "Authorization": "Bearer token",\n  "Content-Type": "application/json"\n}'}
               value={headers}
               onChange={(e) => setHeaders(e.target.value)}
-              className="flex-1 bg-transparent border-none text-slate-300 text-xs font-mono placeholder-slate-600 resize-none focus:ring-0 leading-relaxed"
+              className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-xs font-mono placeholder-[var(--text-secondary)] resize-none focus:ring-0 leading-relaxed"
             />
           )}
           {activeTab === 'body' && (
@@ -242,7 +246,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
               placeholder={'{\n  "key": "value"\n}'}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              className="flex-1 bg-transparent border-none text-slate-300 text-xs font-mono placeholder-slate-600 resize-none focus:ring-0 leading-relaxed"
+              className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-xs font-mono placeholder-[var(--text-secondary)] resize-none focus:ring-0 leading-relaxed"
             />
           )}
           {activeTab === 'scripts' && (

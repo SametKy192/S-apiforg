@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import useSettingsStore from './store/settingsStore';
+import { useEffect } from 'react';
 import RequestPage from './pages/RequestPage';
 import MockPage from './pages/MockPage';
 import CollectionsPage from './pages/CollectionsPage';
@@ -10,11 +12,17 @@ import DatabasePage from './pages/DatabasePage';
 import WorkflowDesignerPage from './pages/WorkflowDesignerPage';
 
 const App = () => {
+  const { initTheme } = useSettingsStore();
+
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
+
   return (
     <BrowserRouter>
-      <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden font-outfit">
+      <div className="flex h-screen overflow-hidden font-outfit text-[var(--text-primary)] transition-colors duration-500">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto relative">
+        <main className="flex-1 overflow-y-auto relative bg-[var(--bg-main)]">
           {/* Main Content Background Blur */}
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
             <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full"></div>

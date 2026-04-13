@@ -1,7 +1,11 @@
-import { useState, useEffect } from 'react';
 import { getAllCollections, addItemToCollection } from '../services/collectionService';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
 
 const ResponseViewer = ({ response, requestId }) => {
+  const { language } = useSettingsStore();
+  const common = translations[language].common;
+  
   const [copied, setCopied] = useState(false);
   const [collections, setCollections] = useState([]);
   const [selectedCollection, setSelectedCollection] = useState('');
@@ -69,13 +73,13 @@ const ResponseViewer = ({ response, requestId }) => {
           
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Time</span>
-              <span className="text-xs font-semibold text-slate-300 tracking-tight">{response.durationMs}ms</span>
+              <span className="text-[9px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">{language === 'tr' ? 'SÜRE' : 'TIME'}</span>
+              <span className="text-xs font-semibold text-[var(--text-primary)] tracking-tight">{response.durationMs}ms</span>
             </div>
-            <div className="w-px h-6 bg-white/5"></div>
+            <div className="w-px h-6 bg-[var(--border-glass)]"></div>
             <div className="flex flex-col">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Size</span>
-              <span className="text-xs font-semibold text-slate-300 tracking-tight">
+              <span className="text-[9px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">{language === 'tr' ? 'BOYUT' : 'SIZE'}</span>
+              <span className="text-xs font-semibold text-[var(--text-primary)] tracking-tight">
                 {response.sizeBytes < 1024 ? `${response.sizeBytes} B` : `${(response.sizeBytes / 1024).toFixed(1)} KB`}
               </span>
             </div>
@@ -86,7 +90,7 @@ const ResponseViewer = ({ response, requestId }) => {
           onClick={() => setShowCollectionPanel(!showCollectionPanel)}
           className={`btn-ghost text-[10px] font-bold uppercase tracking-wider px-4 py-2 ${saved ? 'text-emerald-400' : ''}`}
         >
-          {saved ? 'Saved Successfully' : 'Save to Collection'}
+          {saved ? (language === 'tr' ? 'BAŞARIYLA KAYDEDİLDİ' : 'SAVED SUCCESSFULLY') : (language === 'tr' ? 'KOLEKSİYONA KAYDET' : 'SAVE TO COLLECTION')}
         </button>
       </div>
 
@@ -95,13 +99,13 @@ const ResponseViewer = ({ response, requestId }) => {
           <select
             value={selectedCollection}
             onChange={(e) => setSelectedCollection(e.target.value)}
-            className="flex-1 bg-transparent text-sm text-white border-none focus:ring-0"
+            className="flex-1 bg-transparent text-sm text-[var(--text-primary)] border-none focus:ring-0"
           >
             {collections.length === 0 ? (
-              <option>No collections yet</option>
+              <option className="bg-[var(--bg-sidebar)]">{language === 'tr' ? 'Koleksiyon yok' : 'No collections yet'}</option>
             ) : (
               collections.map((c) => (
-                <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>
+                <option key={c.id} value={c.id} className="bg-[var(--bg-sidebar)]">{c.name}</option>
               ))
             )}
           </select>
@@ -110,7 +114,7 @@ const ResponseViewer = ({ response, requestId }) => {
             disabled={collections.length === 0}
             className="btn-primary text-xs px-4 py-1.5"
           >
-            Confirm
+            {common.save}
           </button>
         </div>
       )}
@@ -144,7 +148,7 @@ const ResponseViewer = ({ response, requestId }) => {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:scale-110 transition-transform">
               <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
             </svg>
-            <span className="text-[10px] font-bold uppercase tracking-widest">{copied ? 'COPIED' : 'COPY'}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{copied ? (language === 'tr' ? 'KOPYALANDI' : 'COPIED') : (language === 'tr' ? 'KOPYALA' : 'COPY')}</span>
           </button>
         </div>
 
@@ -159,8 +163,8 @@ const ResponseViewer = ({ response, requestId }) => {
         {/* Headers Section */}
         {response.headers && (
           <div className="flex flex-col gap-4 mt-4">
-            <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Response Headers</span>
-            <pre className="max-h-[250px] p-4 glass-item rounded-2xl text-slate-400 text-[11px] font-mono overflow-auto border-none">
+            <span className="text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest">{language === 'tr' ? 'CEVAP HEADERLARI' : 'RESPONSE HEADERS'}</span>
+            <pre className="max-h-[250px] p-4 glass-item rounded-2xl text-[var(--text-secondary)] text-[11px] font-mono overflow-auto border-none">
               {formatBody(response.headers, 'pretty')}
             </pre>
           </div>

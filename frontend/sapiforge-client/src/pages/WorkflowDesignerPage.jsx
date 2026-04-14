@@ -10,11 +10,16 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { getAllCollections, getCollectionById } from '../services/collectionService';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
 
 const initialNodes = [];
 const initialEdges = [];
 
 const WorkflowDesignerPage = () => {
+  const { language } = useSettingsStore();
+  const t = translations[language].workflow;
+
   const [collections, setCollections] = useState([]);
   const [selectedCollectionId, setSelectedCollectionId] = useState('');
   const [nodes, setNodes] = useState(initialNodes);
@@ -71,7 +76,6 @@ const WorkflowDesignerPage = () => {
           ) 
         },
         position: { x: 250, y: index * 150 + 50 },
-        // draggable: true,
       }));
 
       const newEdges = [];
@@ -113,25 +117,32 @@ const WorkflowDesignerPage = () => {
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
               </svg>
             </span>
-            Workflow Designer
+            {t.title}
           </h1>
-          <p className="text-slate-500 text-xs font-medium mt-1">Visualize and connect your API orchestration flow.</p>
+          <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-widest">{t.subtitle}</p>
         </div>
 
         <div className="flex items-center gap-4">
-          <select 
-            value={selectedCollectionId}
-            onChange={handleCollectionChange}
-            className="px-6 py-3 glass-item rounded-2xl text-white text-xs font-bold focus:ring-2 ring-blue-500/20 border-none outline-none appearance-none cursor-pointer min-w-[240px]"
-          >
-            <option value="">Select a Collection...</option>
-            {collections.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+          <div className="relative">
+            <select 
+              value={selectedCollectionId}
+              onChange={handleCollectionChange}
+              className="px-6 py-3 glass-item rounded-2xl text-white text-xs font-bold focus:ring-2 ring-blue-500/20 border-none outline-none appearance-none cursor-pointer min-w-[240px] pr-12 transition-all hover:bg-white/5"
+            >
+              <option value="">{t.selectCollection}</option>
+              {collections.map(c => (
+                <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="m6 9 6 6 6-6"/>
+               </svg>
+            </div>
+          </div>
           
           <button className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
-            Auto-Layout
+            {t.autoLayout}
           </button>
         </div>
       </div>
@@ -159,14 +170,14 @@ const WorkflowDesignerPage = () => {
         </ReactFlow>
 
         {nodes.length === 0 && !selectedCollectionId && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center mb-6 border border-dashed border-white/10">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="1.5">
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none animate-in fade-in duration-1000">
+                <div className="w-24 h-24 bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6 border border-dashed border-white/10">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-slate-600">
                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
                     </svg>
                 </div>
-                <h3 className="text-slate-400 font-bold text-lg">Designer Ready</h3>
-                <p className="text-slate-600 text-sm mt-2">Choose a collection from the top menu to visualize its flow.</p>
+                <h3 className="text-slate-400 font-bold text-xl uppercase tracking-tight">{t.ready}</h3>
+                <p className="text-slate-600 text-sm mt-3 max-w-sm text-center leading-relaxed font-medium">{t.readySubtitle}</p>
             </div>
         )}
       </div>

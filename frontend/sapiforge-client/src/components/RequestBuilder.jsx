@@ -119,6 +119,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
   };
 
   const selectedMethod = METHODS.find((m) => m.value === method) || METHODS[0];
+  const t = translations[language].request;
 
   return (
     <div className="glass-card rounded-[2rem] p-6 lg:p-8 flex flex-col gap-8">
@@ -141,7 +142,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
 
           <input
             type="text"
-            placeholder={language === 'tr' ? "URL girin veya {{degisken}} kullanın" : "https://api.example.com/endpoint or {{baseUrl}}/users"}
+            placeholder={t.urlPlaceholder}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -226,7 +227,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
                   : 'text-slate-500 hover:text-slate-300'
               }`}
             >
-              {tab}
+              {t[tab]}
             </button>
           ))}
         </div>
@@ -256,13 +257,13 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
                   onClick={() => setScriptTab('pre')}
                   className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg transition-all ${scriptTab === 'pre' ? 'bg-blue-500/20 text-blue-400' : 'text-slate-500'}`}
                 >
-                  Pre-request
+                  {t.preRequest}
                 </button>
                 <button 
                   onClick={() => setScriptTab('test')}
                   className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg transition-all ${scriptTab === 'test' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-500'}`}
                 >
-                  Post-Tests
+                  {t.postTests}
                 </button>
               </div>
               <textarea

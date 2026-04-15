@@ -1,0 +1,24 @@
+# .gitignore for Sapiforg
+
+# Dotnet
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.doccache
+sapiforge.db
+sapiforge.db-shm
+sapiforge.db-wal
+
+# Node
+node_modules/
+dist/
+.env
+.DS_Store
+
+# Vite
+*.local
+
+# Logs
+logs/
+*.log

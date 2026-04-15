@@ -85,4 +85,45 @@ public class RequestService : IRequestService
     {
         await _requestRepository.DeleteAsync(id);
     }
+
+    /// <summary>İstatistik verilerini getirir</summary>
+    public async Task<object> GetStatsAsync()
+    {
+        var history = await _requestRepository.GetAllAsync();
+        var list = history.ToList();
+
+        var totalRequests = list.Count;
+        var totalSuccess = list.Count(r => r.Response != null && r.Response.StatusCode >= 200 && r.Response.StatusCode < 400);
+        var totalFailed = totalRequests - totalSuccess;
+        
+        var methodCounts = list.GroupBy(r => r.Method)
+                               .Select(g => new { Method = g.Key, Count = g.Count() })
+                               .ToList();
+
+        var avgDuration = list.Where(r => r.Response != null && r.Response.DurationMs > 0)
+                              .Select(r => (double)r.Response!.DurationMs)
+                              .DefaultIfEmpty(0)
+                              .Average();
+
+        // Son 7 günlük grafik verisi
+        var chartData = list.Where(r => r.CreatedAt > DateTime.UtcNow.AddDays(-7))
+                            .GroupBy(r => r.CreatedAt.Date)
+                            .Select(g => new {
+                                Date = g.Key.ToString("yyyy-MM-dd"),
+                                Success = g.Count(r => r.Response != null && r.Response.StatusCode >= 200 && r.Response.StatusCode < 400),
+                                Failed = g.Count(r => r.Response == null || r.Response.StatusCode < 200 || r.Response.StatusCode >= 400)
+                            })
+                            .OrderBy(d => d.Date)
+                            .ToList();
+
+        return new
+        {
+            TotalRequests = totalRequests,
+            SuccessCount = totalSuccess,
+            FailedCount = totalFailed,
+            AvgDurationMs = Math.Round(avgDuration, 2),
+            MethodCounts = methodCounts,
+            DailyStats = chartData
+        };
+    }
 }

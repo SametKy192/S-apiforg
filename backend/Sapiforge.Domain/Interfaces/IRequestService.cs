@@ -22,4 +22,7 @@ public interface IRequestService
 
     /// <summary>Geçmiş kaydını siler</summary>
     Task DeleteFromHistoryAsync(int id);
+
+    /// <summary>İstatistik verilerini getirir</summary>
+    Task<object> GetStatsAsync();
 }

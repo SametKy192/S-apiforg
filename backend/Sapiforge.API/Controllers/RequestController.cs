@@ -70,4 +70,15 @@ public class RequestController : ControllerBase
         await _requestService.DeleteFromHistoryAsync(id);
         return NoContent();
     }
+
+    /// <summary>
+    /// Dashboard için kullanım istatistiklerini getirir.
+    /// GET /api/request/stats
+    /// </summary>
+    [HttpGet("stats")]
+    public async Task<IActionResult> GetStats()
+    {
+        var stats = await _requestService.GetStatsAsync();
+        return Ok(stats);
+    }
 }

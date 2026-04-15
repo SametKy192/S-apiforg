@@ -10,6 +10,7 @@ import EnvironmentPage from './pages/EnvironmentPage';
 import DocsPage from './pages/DocsPage';
 import DatabasePage from './pages/DatabasePage';
 import WorkflowDesignerPage from './pages/WorkflowDesignerPage';
+import DashboardPage from './pages/DashboardPage';
 
 const App = () => {
   const { initTheme } = useSettingsStore();
@@ -31,7 +32,8 @@ const App = () => {
           
           <div className="h-full">
             <Routes>
-              <Route path="/" element={<RequestPage />} />
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/request" element={<RequestPage />} />
               <Route path="/mock" element={<MockPage />} />
               <Route path="/collections" element={<CollectionsPage />} />
               <Route path="/history" element={<HistoryPage />} />

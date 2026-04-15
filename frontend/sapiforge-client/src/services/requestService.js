@@ -25,3 +25,8 @@ export const getRequestById = async (id) => {
 export const deleteRequest = async (id) => {
   await api.delete(`/Request/${id}`);
 };
+
+export const getStats = async () => {
+  const response = await api.get('/Request/stats');
+  return response.data;
+};

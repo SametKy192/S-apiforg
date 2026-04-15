@@ -62,12 +62,19 @@ export const translations = {
         readySubtitle: 'Choose a collection from the top menu to visualize its flow.'
     },
     request: {
-        urlPlaceholder: 'https://api.example.com/endpoint or {{baseUrl}}/users',
-        preRequest: 'Pre-request',
-        postTests: 'Post-Tests',
-        headers: 'Headers',
-        body: 'Body',
         scripts: 'Scripts'
+    },
+    dashboard: {
+        title: 'Analytics Dashboard',
+        subtitle: 'Real-time overview of your API testing activity.',
+        totalRequests: 'Total Requests',
+        successRate: 'Success Rate',
+        avgLatency: 'Avg Latency',
+        failedRequests: 'Failed Requests',
+        activityTitle: 'Request Activity (Last 7 Days)',
+        methodDistribution: 'Method Distribution',
+        success: 'Success',
+        failed: 'Failed'
     }
   },
   tr: {
@@ -133,12 +140,19 @@ export const translations = {
         readySubtitle: 'Akışı görselleştirmek için üst menüden bir koleksiyon seçin.'
     },
     request: {
-        urlPlaceholder: 'URL girin veya {{degisken}} kullanın',
-        preRequest: 'İstek Öncesi',
-        postTests: 'Test / Sonrası',
-        headers: 'Headerlar',
-        body: 'Gövde (Body)',
         scripts: 'Scriptler'
+    },
+    dashboard: {
+        title: 'Analiz Panosu',
+        subtitle: 'API test aktivitelerinizin gerçek zamanlı özeti.',
+        totalRequests: 'Toplam İstek',
+        successRate: 'Başarı Oranı',
+        avgLatency: 'Ort. Gecikme',
+        failedRequests: 'Hatalı İstekler',
+        activityTitle: 'İstek Aktivitesi (Son 7 Gün)',
+        methodDistribution: 'Metot Dağılımı',
+        success: 'Başarılı',
+        failed: 'Hatalı'
     }
   }
 };

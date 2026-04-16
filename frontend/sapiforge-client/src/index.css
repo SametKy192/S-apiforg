@@ -1,60 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* High Contrast Light Mode */
+  --bg-main: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-on-accent: #ffffff;
+  --border-glass: rgba(15, 23, 42, 0.08);
+  --accent-blue: #2563eb;
+  --code-json: #059669; /* Darker emerald for light mode */
+  --sidebar-active: #f1f5f9;
+}
+
+[data-theme='dark'] {
+  /* Sharp Dark Mode */
+  --bg-main: #020617;
+  --bg-sidebar: #070e20;
+  --bg-card: rgba(15, 23, 42, 0.6);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-on-accent: #ffffff;
+  --border-glass: rgba(255, 255, 255, 0.06);
+  --accent-blue: #3b82f6;
+  --code-json: #34d399; /* Emerald 400 for dark mode */
+  --sidebar-active: rgba(59, 130, 246, 0.1);
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg-main: #020617;
-  --bg-sidebar: #0b0f1a;
-  --bg-card: rgba(30, 41, 59, 0.4);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --border-glass: rgba(255, 255, 255, 0.05);
-  --accent-blue: #3b82f6;
-}
-
-.light {
-  --bg-main: #f8fafc;
-  --bg-sidebar: #ffffff;
-  --bg-card: rgba(241, 245, 249, 0.8);
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --border-glass: rgba(15, 23, 42, 0.08);
-  --accent-blue: #2563eb;
-}
-
 @layer base {
   body {
-    @apply antialiased transition-colors duration-500;
-    font-family: 'Outfit', sans-serif;
     background-color: var(--bg-main);
     color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply selection:bg-blue-500/30;
   }
 }
 
 @layer components {
-  /* Glassmorphism Classes */
   .glass-card {
-    background-color: var(--bg-card);
-    @apply backdrop-blur-xl border border-[var(--border-glass)] shadow-2xl;
+    @apply backdrop-blur-3xl border border-[var(--border-glass)] shadow-[0_8px_32px_0_rgba(0,0,0,0.04)];
+    background: var(--bg-card);
   }
 
   .glass-item {
-    @apply bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-[var(--border-glass)] transition-all duration-300;
+    @apply bg-slate-400/5 border border-[var(--border-glass)] backdrop-blur-lg;
   }
 
-  /* Premium Buttons */
   .btn-primary {
-    @apply px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 
-           hover:from-blue-500 hover:to-indigo-500 text-white font-semibold 
-           shadow-lg shadow-blue-500/20 active:scale-95 transition-all duration-200;
+    @apply bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-2xl transition-all 
+           active:scale-95 shadow-lg shadow-blue-600/20 disabled:opacity-50;
   }
 
   .btn-ghost {
-    background-color: var(--border-glass);
-    @apply px-4 py-2 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 
-           text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-glass)] transition-all duration-200;
+    @apply bg-transparent hover:bg-slate-500/5 text-[var(--text-secondary)] font-bold py-2.5 px-6 rounded-2xl 
+           transition-all border border-[var(--border-glass)];
   }
 
   /* Custom Scrollbar */
@@ -62,44 +68,29 @@
     width: 6px;
     height: 6px;
   }
-
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
   }
-
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-700/50 rounded-full hover:bg-slate-600;
-  }
-
-  /* Animated Border Gradient */
-  .animated-border {
-    position: relative;
-    border-radius: 0.75rem;
-  }
-
-  .animated-border::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    background: linear-gradient(90deg, #3b82f6, #818cf8, #3b82f6);
-    background-size: 200% auto;
-    border-radius: 0.75rem;
-    z-index: -1;
-    animation: borderGradient 3s linear infinite;
-    opacity: 0.5;
+    @apply bg-slate-500/20 rounded-full hover:bg-slate-500/40 transition-colors;
   }
 }
 
-@keyframes borderGradient {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+/* Fix for ReactFlow node background visibility */
+.react-flow__node-default, .react-flow__node-input, .react-flow__node-output {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: auto !important;
 }
 
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+.react-flow__handle {
+    @apply w-2 h-2 bg-blue-500 border-2 border-[var(--bg-main)] !important;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.animate-in {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  fill-mode: forwards;
 }

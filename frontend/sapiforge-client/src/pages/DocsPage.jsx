@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getAllMocks } from '../services/mockService';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
 
-// ── Docs (Dokümantasyon) Sayfası ──────────────────────────────────
-// Mock endpoint'leri temiz bir şekilde listeler.
 const DocsPage = () => {
+  const { language } = useSettingsStore();
+  const t = translations[language].docs;
+  const common = translations[language].common;
+
   const [mocks, setMocks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -12,7 +16,7 @@ const DocsPage = () => {
       setIsLoading(true);
       try {
         const data = await getAllMocks();
-        setMocks(data);
+        setMocks(data || []);
       } catch (err) {
         console.error('Mocks getirilemedi:', err);
       } finally {
@@ -23,54 +27,60 @@ const DocsPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-8 p-8 max-w-5xl mx-auto">
-      <div className="border-b border-gray-800 pb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">API Dokümantasyonu</h1>
-        <p className="text-gray-400">Geliştiriciler için mevcut olan mock endpoint'lerin listesi.</p>
+    <div className="flex flex-col gap-10 p-8 lg:p-12 max-w-5xl mx-auto animate-in fade-in duration-700">
+      {/* Header */}
+      <div className="border-b border-[var(--border-glass)] pb-10">
+        <h1 className="text-4xl font-black text-[var(--text-primary)] tracking-tight uppercase">
+            {t.title}
+        </h1>
+        <p className="text-[var(--text-secondary)] text-sm mt-2 font-medium">{t.subtitle}</p>
       </div>
 
       {isLoading ? (
-        <p className="text-gray-400">Yükleniyor...</p>
+        <div className="flex flex-col items-center py-20">
+           <div className="w-10 h-10 border-4 border-blue-500/10 border-t-blue-500 rounded-full animate-spin"></div>
+           <p className="mt-4 text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest">{common.loading}</p>
+        </div>
       ) : mocks.length === 0 ? (
-        <div className="p-12 text-center bg-gray-900 border border-gray-800 rounded-2xl">
-          <p className="text-gray-500 italic">Henüz bir endpoint dökümante edilmedi.</p>
+        <div className="p-16 text-center glass-card rounded-[2.5rem] border-dashed border-white/5 opacity-50">
+          <p className="text-[var(--text-secondary)] font-medium italic">{t.noEndpoints}</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-16">
           {mocks.filter(m => m.isActive).map((mock) => (
-            <div key={mock.id} className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 text-sm font-bold rounded-md uppercase tracking-wider ${
-                  mock.method === 'GET' ? 'bg-green-900/50 text-green-400 border border-green-500/20' :
-                  mock.method === 'POST' ? 'bg-blue-900/50 text-blue-400 border border-blue-500/20' :
-                  'bg-yellow-900/50 text-yellow-400 border border-yellow-500/20'
+            <div key={mock.id} className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center gap-4">
+                <span className={`px-3 py-1.5 text-[10px] font-black rounded-xl border uppercase tracking-widest ${
+                  mock.method === 'GET' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                  mock.method === 'POST' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                  'bg-orange-500/10 text-orange-500 border-orange-500/20'
                 }`}>
                   {mock.method}
                 </span>
-                <code className="text-xl text-gray-200 font-mono">
+                <code className="text-xl text-[var(--text-primary)] font-mono font-bold tracking-tight">
                   /api/mock/serve{mock.path}
                 </code>
               </div>
 
-              <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-                <div className="px-4 py-2 bg-gray-800 border-b border-gray-800 text-xs font-medium text-gray-400 uppercase tracking-widest">
-                  Örnek Cevap (JSON)
+              <div className="glass-card rounded-3xl border-[var(--border-glass)] overflow-hidden">
+                <div className="px-5 py-3 bg-black/10 dark:bg-white/5 border-b border-[var(--border-glass)] text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em]">
+                  {t.exampleResponse}
                 </div>
-                <div className="p-4 overflow-x-auto">
-                  <pre className="text-sm font-mono text-blue-300 whitespace-pre">
+                <div className="p-6 bg-transparent overflow-x-auto">
+                  <pre className="text-sm font-mono text-blue-400 whitespace-pre custom-scrollbar">
                     {mock.responseBody || '{}'}
                   </pre>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-900 rounded-xl border border-gray-800">
-                  <span className="text-xs text-gray-500 block mb-1">Durum Kodu</span>
-                  <span className="text-white font-medium">{mock.statusCode}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-5 glass-card rounded-2xl border-[var(--border-glass)]">
+                  <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest block mb-1 opacity-50">{t.statusCode}</span>
+                  <span className="text-[var(--text-primary)] font-bold text-lg">{mock.statusCode}</span>
                 </div>
-                <div className="p-4 bg-gray-900 rounded-xl border border-gray-800">
-                  <span className="text-xs text-gray-500 block mb-1">Cevap Tipi</span>
-                  <span className="text-white font-medium">application/json</span>
+                <div className="p-5 glass-card rounded-2xl border-[var(--border-glass)]">
+                  <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest block mb-1 opacity-50">{t.responseType}</span>
+                  <span className="text-[var(--text-primary)] font-bold text-lg">application/json</span>
                 </div>
               </div>
             </div>

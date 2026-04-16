@@ -2,27 +2,26 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHistory, deleteRequest } from '../services/requestService';
 import useRequestStore from '../store/requestStore';
+import useSettingsStore from '../store/settingsStore';
+import { translations } from '../i18n/translations';
 
-// ── Geçmiş sayfası ──────────────────────────────────────────────
-// Kullanıcının gönderdiği tüm isteklerin geçmişini listeler.
-// URL'ye göre arama ve method'a göre filtreleme desteklenir.
 const HistoryPage = () => {
   const navigate = useNavigate();
   const { loadRequest } = useRequestStore();
+  const { language } = useSettingsStore();
+  const t = translations[language].history;
+  const common = translations[language].common;
 
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Arama ve filtreleme state'leri
   const [search, setSearch] = useState('');
   const [methodFilter, setMethodFilter] = useState('ALL');
 
-  // Geçmişi backend'den getir
   const fetchHistory = async () => {
     setIsLoading(true);
     try {
       const data = await getHistory();
-      setHistory(data);
+      setHistory(data || []);
     } catch (err) {
       console.error('Geçmiş getirilemedi:', err);
     } finally {
@@ -34,8 +33,8 @@ const HistoryPage = () => {
     fetchHistory();
   }, []);
 
-  // Geçmiş kaydını sil
   const handleDelete = async (id) => {
+    if (!window.confirm(common.delete + '?')) return;
     try {
       await deleteRequest(id);
       setHistory(history.filter((r) => r.id !== id));
@@ -44,131 +43,150 @@ const HistoryPage = () => {
     }
   };
 
-  // Geçmişteki isteği store'a yükle ve ana sayfaya git
   const handleReuse = (request) => {
     loadRequest(request);
-    navigate('/');
+    navigate('/request');
   };
 
-  // Arama ve filtreleme uygulanmış liste
   const filteredHistory = history.filter((request) => {
-    // URL araması
-    const matchesSearch = request.url
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
-    // Method filtresi
-    const matchesMethod =
-      methodFilter === 'ALL' || request.method === methodFilter;
-
+    const matchesSearch = request.url.toLowerCase().includes(search.toLowerCase());
+    const matchesMethod = methodFilter === 'ALL' || request.method === methodFilter;
     return matchesSearch && matchesMethod;
   });
 
-  // Method badge rengi
-  const getMethodColor = (method) => {
+  const getMethodStyle = (method) => {
     switch (method) {
-      case 'GET': return 'bg-green-900 text-green-300';
-      case 'POST': return 'bg-blue-900 text-blue-300';
-      case 'PUT': return 'bg-yellow-900 text-yellow-300';
-      case 'DELETE': return 'bg-red-900 text-red-300';
-      case 'PATCH': return 'bg-purple-900 text-purple-300';
-      default: return 'bg-gray-800 text-gray-300';
+      case 'GET': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+      case 'POST': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      case 'PUT': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
+      case 'DELETE': return 'bg-rose-500/10 text-rose-500 border-rose-500/20';
+      case 'PATCH': return 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20';
+      default: return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
     }
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      {/* Başlık */}
-      <h1 className="text-xl font-medium text-white">İstek Geçmişi</h1>
+    <div className="flex flex-col gap-10 p-8 lg:p-12 max-w-7xl mx-auto animate-in fade-in duration-700">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-black text-[var(--text-primary)] tracking-tight uppercase">
+            {t.title}
+          </h1>
+          <p className="text-[var(--text-secondary)] text-sm mt-2 font-medium">{t.subtitle}</p>
+        </div>
+        
+        <div className="flex gap-3 w-full md:w-auto">
+          <div className="relative flex-1 md:min-w-[300px]">
+             <input
+                type="text"
+                placeholder={t.searchPlaceholder}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-5 py-3 glass-item rounded-2xl text-[var(--text-primary)] text-xs font-bold focus:ring-2 ring-blue-500/10 border-none outline-none placeholder-[var(--text-secondary)]/30"
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]/50">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                </svg>
+              </div>
+          </div>
 
-      {/* Arama ve filtre satırı */}
-      <div className="flex gap-3">
-        {/* URL arama */}
-        <input
-          type="text"
-          placeholder="URL'de ara..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 placeholder-gray-500"
-        />
-
-        {/* Method filtresi */}
-        <select
-          value={methodFilter}
-          onChange={(e) => setMethodFilter(e.target.value)}
-          className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-        >
-          <option value="ALL">Tüm Metodlar</option>
-          <option value="GET">GET</option>
-          <option value="POST">POST</option>
-          <option value="PUT">PUT</option>
-          <option value="DELETE">DELETE</option>
-          <option value="PATCH">PATCH</option>
-        </select>
+          <select
+            value={methodFilter}
+            onChange={(e) => setMethodFilter(e.target.value)}
+            className="px-4 py-3 glass-item rounded-2xl text-[var(--text-primary)] text-[10px] font-black uppercase tracking-widest focus:ring-2 ring-blue-500/10 border-none outline-none cursor-pointer appearance-none pr-10"
+          >
+            <option value="ALL">{t.allMethods}</option>
+            {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map(m => (
+                <option key={m} value={m} className="bg-[var(--bg-main)]">{m}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Sonuç sayısı */}
-      {!isLoading && (
-        <p className="text-gray-500 text-xs">
-          {filteredHistory.length} istek gösteriliyor
-        </p>
-      )}
+      {/* History List */}
+      <div className="flex flex-col gap-4">
+        {!isLoading && (
+          <div className="flex items-center gap-2 mb-2 ml-2">
+             <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+             <p className="text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-[0.2em]">
+                {t.showing} {filteredHistory.length} {t.requests}
+             </p>
+          </div>
+        )}
 
-      {/* Liste */}
-      {isLoading ? (
-        <p className="text-gray-400 text-sm">Yükleniyor...</p>
-      ) : filteredHistory.length === 0 ? (
-        <p className="text-gray-400 text-sm">
-          {history.length === 0 ? 'Henüz istek gönderilmedi.' : 'Arama kriterine uygun istek bulunamadı.'}
-        </p>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {filteredHistory.map((request) => (
-            <div
-              key={request.id}
-              className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700"
-            >
-              {/* Sol taraf: method, URL, status kodu */}
-              <div className="flex items-center gap-3">
-                <span className={`px-2 py-1 text-xs rounded font-mono ${getMethodColor(request.method)}`}>
-                  {request.method}
-                </span>
-                <span className="text-white font-mono text-sm truncate max-w-md">
-                  {request.url}
-                </span>
-                {request.response && (
-                  <span className={`px-2 py-1 text-xs rounded ${
-                    request.response.statusCode < 300
-                      ? 'bg-green-900 text-green-300'
-                      : 'bg-red-900 text-red-300'
-                  }`}>
-                    {request.response.statusCode}
-                  </span>
-                )}
-              </div>
+        {isLoading ? (
+          <div className="flex flex-col items-center py-20">
+            <div className="w-10 h-10 border-4 border-blue-500/10 border-t-blue-500 rounded-full animate-spin"></div>
+            <p className="mt-4 text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest">{common.loading}</p>
+          </div>
+        ) : filteredHistory.length === 0 ? (
+          <div className="glass-card rounded-[2.5rem] py-32 flex flex-col items-center justify-center border-dashed border-white/5 opacity-50">
+             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/>
+                </svg>
+             </div>
+             <p className="text-[var(--text-primary)] font-bold text-lg">{history.length === 0 ? t.noHistory : t.noResults}</p>
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            {filteredHistory.map((request) => (
+              <div
+                key={request.id}
+                className="group glass-card hover:bg-[var(--border-glass)] rounded-3xl p-5 border-[var(--border-glass)] transition-all duration-300 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-6 overflow-hidden">
+                   <div className={`px-3 py-1.5 rounded-xl border text-[10px] font-black font-mono w-20 text-center ${getMethodStyle(request.method)}`}>
+                      {request.method}
+                   </div>
+                   <div className="flex flex-col gap-1 min-w-0">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[var(--text-primary)] font-mono text-sm font-bold truncate max-w-xl">
+                          {request.url}
+                        </span>
+                        {request.response && (
+                          <span className={`px-2 py-0.5 text-[10px] font-black rounded-lg ${
+                            request.response.statusCode < 400
+                              ? 'bg-emerald-500/10 text-emerald-500'
+                              : 'bg-rose-500/10 text-rose-500'
+                          }`}>
+                            {request.response.statusCode}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest opacity-40">
+                         {new Date(request.createdAt).toLocaleString(language === 'tr' ? 'tr-TR' : 'en-US')}
+                      </span>
+                   </div>
+                </div>
 
-              {/* Sağ taraf: tarih, tekrar gönder, sil */}
-              <div className="flex items-center gap-3">
-                <span className="text-gray-500 text-xs">
-                  {new Date(request.createdAt).toLocaleString('tr-TR')}
-                </span>
-                <button
-                  onClick={() => handleReuse(request)}
-                  className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
-                >
-                  Tekrar Gönder
-                </button>
-                <button
-                  onClick={() => handleDelete(request.id)}
-                  className="text-red-400 hover:text-red-300 text-sm transition-colors"
-                >
-                  Sil
-                </button>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                  <button
+                    onClick={() => handleReuse(request)}
+                    className="p-3 text-blue-400 hover:bg-blue-400/10 rounded-2xl transition-all"
+                    title={t.reuse}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                       <path d="m21 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(request.id)}
+                    className="p-3 text-rose-400 hover:bg-rose-400/10 rounded-2xl transition-all"
+                    title={t.delete}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                       <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

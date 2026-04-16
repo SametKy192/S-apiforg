@@ -33,7 +33,7 @@ const DashboardPage = () => {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen">
+            <div className="flex flex-col items-center justify-center h-full">
                 <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
                 <p className="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-[0.2em] mt-6">{common.loading}</p>
             </div>
@@ -51,7 +51,7 @@ const DashboardPage = () => {
         <div className="flex flex-col gap-10 p-8 lg:p-12 max-w-7xl mx-auto animate-in fade-in duration-700">
             {/* Header */}
             <div>
-                <h1 className="text-4xl font-black text-white tracking-tight uppercase">
+                <h1 className="text-4xl font-black text-[var(--text-primary)] tracking-tight uppercase">
                     {t.title}
                 </h1>
                 <p className="text-slate-500 text-sm mt-2 font-medium">{t.subtitle}</p>
@@ -68,7 +68,7 @@ const DashboardPage = () => {
                     <div key={i} className={`glass-card p-6 rounded-3xl border-white/5 bg-gradient-to-br ${card.color} relative overflow-hidden group`}>
                         <div className="absolute -right-4 -top-4 text-6xl opacity-10 group-hover:scale-110 transition-transform duration-500">{card.icon}</div>
                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{card.label}</p>
-                        <h3 className="text-3xl font-black text-white">{card.value}</h3>
+                        <h3 className="text-3xl font-black text-[var(--text-primary)]">{card.value}</h3>
                     </div>
                 ))}
             </div>

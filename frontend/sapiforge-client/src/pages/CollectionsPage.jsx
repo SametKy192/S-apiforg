@@ -2,6 +2,9 @@ import { getCollectionById, getAllCollections, createCollection, deleteCollectio
 import useSettingsStore from '../store/settingsStore';
 import { translations } from '../i18n/translations';
 import { useState, useEffect } from 'react';
+import CollectionRunnerModal from '../components/CollectionRunnerModal';
+import ImportPostmanModal from '../components/ImportPostmanModal';
+import DocumentationModal from '../components/DocumentationModal';
 
 const CollectionsPage = () => {
   const { language } = useSettingsStore();

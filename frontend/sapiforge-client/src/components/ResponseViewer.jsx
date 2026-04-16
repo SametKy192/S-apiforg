@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { getAllCollections, addItemToCollection } from '../services/collectionService';
 import useSettingsStore from '../store/settingsStore';
 import { translations } from '../i18n/translations';
@@ -128,13 +129,13 @@ const ResponseViewer = ({ response, requestId }) => {
             <div className="flex p-1 glass-item rounded-xl">
               <button 
                 onClick={() => setViewMode('pretty')}
-                className={`px-4 py-1 text-[10px] font-bold rounded-lg transition-all ${viewMode === 'pretty' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500'}`}
+                className={`px-4 py-1 text-[10px] font-bold rounded-lg transition-all ${viewMode === 'pretty' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
               >
                 PRETTY
               </button>
               <button 
                 onClick={() => setViewMode('raw')}
-                className={`px-4 py-1 text-[10px] font-bold rounded-lg transition-all ${viewMode === 'raw' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500'}`}
+                className={`px-4 py-1 text-[10px] font-bold rounded-lg transition-all ${viewMode === 'raw' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
               >
                 RAW
               </button>
@@ -155,7 +156,7 @@ const ResponseViewer = ({ response, requestId }) => {
         {/* Code Content */}
         <div className="relative group">
           <div className="absolute inset-0 bg-blue-500/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <pre className="max-h-[600px] p-6 glass-item rounded-[1.5rem] text-emerald-400/90 text-[13px] font-mono overflow-auto leading-relaxed custom-scrollbar whitespace-pre-wrap relative z-10">
+          <pre className="max-h-[600px] p-6 glass-item rounded-[1.5rem] text-[var(--code-json)] text-[13px] font-mono overflow-auto leading-relaxed custom-scrollbar whitespace-pre-wrap relative z-10">
             {formatBody(response.body, viewMode)}
           </pre>
         </div>

@@ -87,7 +87,25 @@ const ImportPostmanModal = ({ isOpen, onClose, onImportSuccess }) => {
         </div>
 
         <div className="p-6 space-y-4">
-          <p className="text-gray-400 text-sm">Paste your Postman Collection JSON (v2.1) below:</p>
+          <div className="flex items-center justify-between">
+            <p className="text-gray-400 text-sm">Paste your Postman Collection JSON (v2.1) or upload a file:</p>
+            <label className="cursor-pointer px-3 py-1 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all">
+                Select File
+                <input 
+                    type="file" 
+                    className="hidden" 
+                    accept=".json"
+                    onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => setJsonContent(event.target.result);
+                            reader.readAsText(file);
+                        }
+                    }}
+                />
+            </label>
+          </div>
           <textarea
             value={jsonContent}
             onChange={(e) => setJsonContent(e.target.value)}

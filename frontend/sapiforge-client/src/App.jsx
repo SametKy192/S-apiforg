@@ -21,9 +21,9 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="flex h-screen overflow-hidden font-outfit text-[var(--text-primary)] transition-colors duration-500">
+      <div className="flex h-screen overflow-hidden text-[var(--text-primary)] transition-colors duration-500">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto relative bg-[var(--bg-main)]">
+        <main className="flex-1 min-w-0 overflow-y-auto relative bg-[var(--bg-main)]">
           {/* Main Content Background Blur */}
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
             <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full"></div>

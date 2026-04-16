@@ -4,30 +4,20 @@ import { persist } from 'zustand/middleware';
 const useSettingsStore = create(
   persist(
     (set) => ({
-      language: 'en',
+      language: 'tr',
       theme: 'dark',
       
       setLanguage: (lang) => set({ language: lang }),
       toggleTheme: () => set((state) => {
         const newTheme = state.theme === 'dark' ? 'light' : 'dark';
-        if (newTheme === 'light') {
-          document.documentElement.classList.add('light');
-        } else {
-          document.documentElement.classList.remove('light');
-        }
+        document.documentElement.setAttribute('data-theme', newTheme);
         return { theme: newTheme };
       }),
       
-      // Initialize theme on store load
       initTheme: () => {
-        const theme = localStorage.getItem('settings-storage') 
-          ? JSON.parse(localStorage.getItem('settings-storage')).state.theme 
-          : 'dark';
-        if (theme === 'light') {
-          document.documentElement.classList.add('light');
-        } else {
-          document.documentElement.classList.remove('light');
-        }
+        const saved = localStorage.getItem('settings-storage');
+        const theme = saved ? JSON.parse(saved).state?.theme : 'dark';
+        document.documentElement.setAttribute('data-theme', theme || 'dark');
       }
     }),
     {

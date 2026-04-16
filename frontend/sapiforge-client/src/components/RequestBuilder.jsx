@@ -124,57 +124,74 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
   return (
     <div className="glass-card rounded-[2rem] p-6 lg:p-8 flex flex-col gap-8">
       {/* Search & Action Bar */}
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex-1 flex gap-3 p-1.5 glass-item rounded-2xl items-center focus-within:ring-2 ring-blue-500/20 transition-all">
-          <select
-            value={method}
-            onChange={(e) => setMethod(e.target.value)}
-            className={`w-28 pl-4 pr-2 py-2 bg-transparent border-none rounded-xl text-xs font-bold tracking-widest focus:ring-0 cursor-pointer ${selectedMethod.color}`}
-          >
-            {METHODS.map((m) => (
-              <option key={m.value} value={m.value} className="bg-[var(--bg-sidebar)] text-[var(--text-primary)]">
-                {m.value}
-              </option>
-            ))}
-          </select>
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 flex flex-col lg:flex-row gap-4">
+          
+          {/* Method Picker */}
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.2em] pl-1">
+              {language === 'tr' ? 'İSTEK TİPİ' : 'METHOD'}
+            </span>
+            <div className="glass-item p-1 min-w-[120px]">
+              <select
+                value={method}
+                onChange={(e) => setMethod(e.target.value)}
+                className={`w-full bg-transparent border-none text-xs font-bold tracking-widest focus:ring-0 cursor-pointer ${selectedMethod.color}`}
+              >
+                {METHODS.map((m) => (
+                  <option key={m.value} value={m.value} className="bg-[var(--bg-sidebar)] text-[var(--text-primary)]">
+                    {m.value}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          <div className="w-px h-6 bg-[var(--border-glass)]"></div>
+          {/* URL Input */}
+          <div className="flex-1 flex flex-col gap-2">
+            <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.2em] pl-1">
+              {language === 'tr' ? 'API ADRESİ (URL)' : 'API ENDPOINT URL'}
+            </span>
+            <div className="glass-item p-2 flex items-center focus-within:ring-2 ring-[var(--accent)]/20 transition-all">
+              <input
+                type="text"
+                placeholder={t.urlPlaceholder}
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-sm font-mono placeholder-[var(--text-secondary)]/50 focus:ring-0"
+              />
+            </div>
+          </div>
 
-          <input
-            type="text"
-            placeholder={t.urlPlaceholder}
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-sm font-mono placeholder-[var(--text-secondary)] focus:ring-0 ml-2"
-          />
-
-          <div className="hidden lg:flex items-center gap-2 pr-2">
-            <div className="relative group">
-              <div className="flex items-center gap-2 px-3 py-2 glass-item rounded-xl cursor-pointer">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                <select
-                  value={activeEnvironment?.id || ''}
-                  onChange={(e) => handleEnvChange(e.target.value)}
-                  className="bg-transparent text-[10px] font-bold text-[var(--text-secondary)] border-none p-0 focus:ring-0 uppercase tracking-wider"
-                >
-                  <option value="" className="bg-[var(--bg-sidebar)]">NO ENV</option>
-                  {environments.map((env) => (
-                    <option key={env.id} value={env.id} className="bg-[var(--bg-sidebar)] text-[var(--text-primary)]">
-                      {env.name.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
+          {/* Env Picker */}
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.2em] pl-1">
+              {language === 'tr' ? 'ORTAM' : 'ENVIRONMENT'}
+            </span>
+            <div className="glass-item p-2 flex items-center gap-2 relative group min-w-[140px]">
+              <div className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-pulse"></div>
+              <select
+                value={activeEnvironment?.id || ''}
+                onChange={(e) => handleEnvChange(e.target.value)}
+                className="bg-transparent text-[10px] font-bold text-[var(--text-primary)] border-none p-0 focus:ring-0 uppercase tracking-wider w-full"
+              >
+                <option value="" className="bg-[var(--bg-sidebar)] text-[var(--text-secondary)]">NO ENV</option>
+                {environments.map((env) => (
+                  <option key={env.id} value={env.id} className="bg-[var(--bg-sidebar)] text-[var(--text-primary)]">
+                    {env.name.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+              
               {activeEnvVars && Object.keys(activeEnvVars).length > 0 && (
                 <div className="absolute top-full mt-3 right-0 z-20 w-64 glass-card p-4 rounded-2xl invisible group-hover:visible animate-in fade-in slide-in-from-top-2 duration-200">
-                  <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Live Variables</h4>
+                  <h4 className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-3">Live Variables</h4>
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
                     {Object.entries(activeEnvVars).map(([key, value]) => (
                       <div key={key} className="p-2 glass-item rounded-lg">
-                        <div className="text-[10px] text-blue-400 font-mono mb-1">{`{{${key}}}`}</div>
-                        <div className="text-[10px] text-slate-400 truncate">{String(value)}</div>
+                        <div className="text-[10px] text-[var(--accent)] font-mono mb-1">{`{{${key}}}`}</div>
+                        <div className="text-[10px] text-[var(--text-primary)] truncate">{String(value)}</div>
                       </div>
                     ))}
                   </div>
@@ -216,52 +233,66 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
 
       {/* Configuration Tabs */}
       <div className="flex flex-col gap-6">
-        <div className="flex gap-1.5 p-1 glass-item rounded-2xl self-start">
-          {['headers', 'body', 'scripts'].map((tab) => (
+        <div className="flex gap-2 p-1.5 glass-item rounded-2xl self-start">
+          {[
+            { id: 'headers', icon: '📝' },
+            { id: 'body', icon: '📦' },
+            { id: 'scripts', icon: '⚡' }
+          ].map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-xl text-[11px] font-bold tracking-widest uppercase transition-all ${
-                activeTab === tab
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                  : 'text-slate-500 hover:text-slate-300'
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-5 py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all flex items-center gap-2 ${
+                activeTab === tab.id
+                  ? 'bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent)]/20'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-white/5 border border-white/5 hover:border-white/10'
               }`}
             >
-              {t[tab]}
+              <span className="opacity-70">{tab.icon}</span>
+              {t[tab.id]}
             </button>
           ))}
         </div>
 
         {/* Editor Area */}
-        <div className="glass-item rounded-3xl p-4 min-h-[220px] flex flex-col focus-within:ring-1 ring-white/10 transition-all">
-          {activeTab === 'headers' && (
-            <textarea
-              placeholder={'{\n  "Authorization": "Bearer token",\n  "Content-Type": "application/json"\n}'}
-              value={headers}
-              onChange={(e) => setHeaders(e.target.value)}
-              className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-xs font-mono placeholder-[var(--text-secondary)] resize-none focus:ring-0 leading-relaxed"
-            />
-          )}
-          {activeTab === 'body' && (
-            <textarea
-              placeholder={'{\n  "key": "value"\n}'}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-xs font-mono placeholder-[var(--text-secondary)] resize-none focus:ring-0 leading-relaxed"
-            />
-          )}
-          {activeTab === 'scripts' && (
+        <div className="flex flex-col gap-2 flex-1">
+          <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.2em] pl-1">
+            {activeTab === 'headers' 
+              ? (language === 'tr' ? 'İSTEK BAŞLIKLARI (JSON)' : 'REQUEST HEADERS (JSON)')
+              : activeTab === 'body' 
+                ? (language === 'tr' ? 'İSTEK GÖVDESİ (JSON)' : 'REQUEST BODY (JSON)')
+                : (language === 'tr' ? 'OTOMASYON SCRIPTLERİ' : 'AUTOMATION SCRIPTS')
+            }
+          </span>
+          <div className="glass-item rounded-2xl p-4 min-h-[220px] flex flex-col focus-within:ring-2 ring-[var(--accent)]/10 transition-all">
+            {activeTab === 'headers' && (
+              <textarea
+                placeholder={'{\n  "Authorization": "Bearer token",\n  "Content-Type": "application/json"\n}'}
+                value={headers}
+                onChange={(e) => setHeaders(e.target.value)}
+                className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-xs font-mono placeholder-[var(--text-secondary)]/30 resize-none focus:ring-0 leading-relaxed"
+              />
+            )}
+            {activeTab === 'body' && (
+              <textarea
+                placeholder={'{\n  "key": "value"\n}'}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                className="flex-1 bg-transparent border-none text-[var(--text-primary)] text-xs font-mono placeholder-[var(--text-secondary)]/30 resize-none focus:ring-0 leading-relaxed"
+              />
+            )}
+            {activeTab === 'scripts' && (
             <div className="flex flex-col gap-4 flex-1">
               <div className="flex gap-2">
                 <button 
                   onClick={() => setScriptTab('pre')}
-                  className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg transition-all ${scriptTab === 'pre' ? 'bg-blue-500/20 text-blue-400' : 'text-slate-500'}`}
+                  className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-lg transition-all ${scriptTab === 'pre' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-[var(--text-secondary)] hover:text-white hover:bg-white/5'}`}
                 >
                   {t.preRequest}
                 </button>
                 <button 
                   onClick={() => setScriptTab('test')}
-                  className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-lg transition-all ${scriptTab === 'test' ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-500'}`}
+                  className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-lg transition-all ${scriptTab === 'test' ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-[var(--text-secondary)] hover:text-white hover:bg-white/5'}`}
                 >
                   {t.postTests}
                 </button>
@@ -276,6 +307,7 @@ const RequestBuilder = ({ onSend, isLoading, initialData }) => {
           )}
         </div>
       </div>
+    </div>
 
       <CodeSnippetModal 
         isOpen={isCodeModalOpen} 

@@ -23,14 +23,14 @@ const App = () => {
     <BrowserRouter>
       <div className="flex h-screen overflow-hidden text-[var(--text-primary)] transition-colors duration-500">
         <Sidebar />
-        <main className="flex-1 min-w-0 overflow-y-auto relative bg-[var(--bg-main)]">
+        <main className="flex-1 min-w-0 relative bg-[var(--bg-main)] overflow-hidden">
           {/* Main Content Background Blur */}
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
             <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full"></div>
             <div className="absolute bottom-[-10%] left-[5%] w-[30%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full"></div>
           </div>
           
-          <div className="h-full">
+          <div className="h-full overflow-y-auto overflow-x-hidden">
             <Routes>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/request" element={<RequestPage />} />

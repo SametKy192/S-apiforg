@@ -69,21 +69,21 @@ const WorkflowDesignerPage = () => {
           item: item,
           status: 'idle', // idle, running, success, error
           label: (
-            <div className="p-4 glass-card border-[var(--border-glass)] rounded-2xl shadow-2xl min-w-[220px]">
-              <div className="flex items-center justify-between mb-3">
-                <span className={`text-[9px] font-black px-2 py-0.5 rounded-md ${
-                  item.request.method === 'GET' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
-                  item.request.method === 'POST' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' : 
-                  'bg-orange-500/10 text-orange-500 border-orange-500/20'
+            <div className="p-5 glass-card min-w-[240px] group transition-all duration-300">
+              <div className="flex items-center justify-between mb-4">
+                <span className={`text-[10px] font-black px-2.5 py-1 rounded border-2 ${
+                  item.request.method === 'GET' ? 'bg-emerald-500/5 text-emerald-600 border-emerald-500/10' :
+                  item.request.method === 'POST' ? 'bg-indigo-500/5 text-indigo-600 border-indigo-500/10' : 
+                  'bg-rose-500/5 text-rose-600 border-rose-500/10'
                 }`}>
                   {item.request.method}
                 </span>
                 <div className="flex items-center gap-1.5" id={`status-${item.id}`}>
-                   <div className="w-1.5 h-1.5 bg-slate-600 rounded-full"></div>
+                   <div className="w-2 h-2 bg-slate-200 dark:bg-white/10 rounded-full"></div>
                 </div>
               </div>
-              <h4 className="text-[var(--text-primary)] text-xs font-bold truncate mb-1">{item.name || item.request.url.split('/').pop()}</h4>
-              <p className="text-[var(--text-secondary)] text-[9px] truncate opacity-40">{item.request.url}</p>
+              <h4 className="text-[var(--text-primary)] text-sm font-bold truncate mb-1 font-space tracking-tight">{item.name || item.request.url.split('/').pop()}</h4>
+              <p className="text-[var(--text-secondary)] text-[10px] truncate opacity-50 font-medium">{item.request.url}</p>
             </div>
           ) 
         },

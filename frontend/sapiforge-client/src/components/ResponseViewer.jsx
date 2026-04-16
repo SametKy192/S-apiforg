@@ -154,9 +154,9 @@ const ResponseViewer = ({ response, requestId }) => {
         </div>
 
         {/* Code Content */}
-        <div className="relative group">
+        <div className="relative group w-full overflow-hidden">
           <div className="absolute inset-0 bg-blue-500/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <pre className="max-h-[600px] p-6 glass-item rounded-[1.5rem] text-[var(--code-json)] text-[13px] font-mono overflow-auto leading-relaxed custom-scrollbar whitespace-pre-wrap relative z-10">
+          <pre className="max-h-[600px] p-6 glass-item rounded-[1.5rem] text-[var(--code-json)] text-[13px] font-mono overflow-auto leading-relaxed custom-scrollbar whitespace-pre-wrap break-all relative z-10 w-full">
             {formatBody(response.body, viewMode)}
           </pre>
         </div>

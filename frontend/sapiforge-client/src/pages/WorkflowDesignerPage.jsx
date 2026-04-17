@@ -283,7 +283,7 @@ const WorkflowDesignerPage = () => {
               style={{ background: 'transparent' }}
             >
               <Background color="var(--border-glass)" gap={20} />
-              <Controls className="bg-[var(--bg-card)] border-[var(--border-glass)] fill-[var(--text-primary)]" />
+              <Controls />
             </ReactFlow>
 
             {nodes.length === 0 && !selectedCollectionId && (

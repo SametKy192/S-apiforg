@@ -110,3 +110,28 @@
 .react-flow__handle {
     @apply w-3 h-3 bg-[var(--accent)] border-2 border-[var(--bg-main)] rounded-full !important;
 }
+
+/* ReactFlow Controls Theme Fix */
+.react-flow__controls {
+    @apply shadow-2xl rounded-xl overflow-hidden border border-[var(--border)] !important;
+    background: var(--bg-card) !important;
+}
+
+.react-flow__controls-button {
+    @apply border-b border-[var(--border)] bg-transparent hover:bg-[var(--accent-soft)] transition-colors !important;
+    fill: var(--text-primary) !important;
+}
+
+.react-flow__controls-button:last-child {
+    border-bottom: none !important;
+}
+
+.react-flow__controls-button svg {
+    @apply w-4 h-4 !important;
+    fill: var(--text-primary) !important;
+}
+
+/* Dot Background styling */
+.react-flow__background {
+    @apply opacity-20 !important;
+}
